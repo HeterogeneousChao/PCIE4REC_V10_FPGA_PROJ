@@ -1,0 +1,202 @@
+// Copyright (C) 1991-2014 Altera Corporation
+// Your use of Altera Corporation's design tools, logic functions 
+// and other software and tools, and its AMPP partner logic 
+// functions, and any output files from any of the foregoing 
+// (including device programming or simulation files), and any 
+// associated documentation or information are expressly subject 
+// to the terms and conditions of the Altera Program License 
+// Subscription Agreement, Altera MegaCore Function License 
+// Agreement, or other applicable license agreement, including, 
+// without limitation, that your use is for the sole purpose of 
+// programming logic devices manufactured by Altera and sold by 
+// Altera or its authorized distributors.  Please refer to the 
+// applicable agreement for further details.
+
+// *****************************************************************************
+// This file contains a Verilog test bench template that is freely editable to  
+// suit user's needs .Comments are provided in each section to help the user    
+// fill out necessary details.                                                  
+// *****************************************************************************
+// Generated on "04/07/2018 22:43:53"
+                                                                                
+// Verilog Test Bench template for design : MODULE_QUAD_MIXER
+// 
+// Simulation tool : ModelSim-Altera (Verilog)
+// 
+
+`timescale 1 ps/ 1 ps
+module MODULE_QUAD_MIXER_vlg_tst();
+// constants                                           
+// general purpose registers
+reg eachvec;
+// test vector input registers
+reg CLK;
+reg signed [31:0] Data_Config_In;
+reg signed [15:0] Data_In;
+reg isConfig;
+reg nRST;
+// wires                                               
+wire signed [15:0]  Data_Out_I;
+wire signed [15:0]  Data_Out_Q;
+
+wire signed [15:0]  NCO_Data_Out_I;
+wire signed [15:0]  NCO_Data_Out_Q;
+
+reg Data_In_Valid;
+wire isConfigACK;
+wire isConfigDone;
+
+
+parameter  clk_period = 100;                        // clk frequency: 100 MHz;
+parameter  clk_half_period = clk_period / 2;        
+parameter  data_num   = 10000;                        // simulate data length;
+parameter  time_sim = data_num * clk_period; 		// simulate time;
+
+
+// assign statements (if any)                          
+MODULE_QUAD_MIXER i1 (
+// port map - connection between master ports and signals/registers   
+	.CLK(CLK),
+	.Data_Config_In(Data_Config_In),
+	.Data_In(Data_In),
+	.Data_In_Valid(Data_In_Valid),
+	.Data_Out_I(Data_Out_I),
+	.Data_Out_Q(Data_Out_Q),
+	.NCO_Data_Out_I(NCO_Data_Out_I),
+	.NCO_Data_Out_Q(NCO_Data_Out_Q),
+	.isConfig(isConfig),
+	.isConfigACK(isConfigACK),
+	.isConfigDone(isConfigDone),
+	.nRST(nRST)
+);
+initial                                                
+begin                                                  
+// code that executes only once                        
+// insert code here --> begin                          
+	CLK  = 1;
+	nRST = 0;
+	isConfig = 0;
+	Data_Config_In = 32'd0;
+	Data_In_Valid = 1'b1;
+	
+	#600 nRST = 1;
+	#time_sim  $finish;
+	
+	Data_In = 16'd0;                                             
+// --> end                                             
+$display("Running testbench");                       
+end               
+
+//// generate clk
+always 
+begin
+	#clk_half_period CLK = ~CLK;
+end
+
+
+//// read test data from file;
+integer Pattern;
+reg signed [15:0] stimulus[1:data_num];
+//reg signed [15:0] Data_In_debug;
+
+initial 
+begin
+	// file must be putted in dir： proc\simulation\modelsim\
+	
+	$readmemb("Bin_S.txt", stimulus);
+	Pattern = 0;
+	repeat(data_num)
+	begin
+		// Pattern  = ((Data_In_Valid) ? (Pattern + 1) : 0);
+		// Data_In  = ((Data_In_Valid) ? stimulus[Pattern] : {16{1'b0}});
+		Data_In  = stimulus[Pattern];
+		Pattern  = Pattern + 1;
+		#clk_period;
+	end
+end
+
+
+//// write output d_out to file: simDataOut.txt;
+integer file_out_I;
+initial 
+begin
+	//the file in the dir: proc\simulation\modelsim\
+	
+	file_out_I = $fopen("simDataOut_I.txt");
+	if(!file_out_I)
+	begin
+		$display("could not open ouput file!");
+		$finish;
+	end
+end	
+
+integer file_out_Q;
+initial 
+begin
+	//the file in the dir: proc\simulation\modelsim\
+	
+	file_out_Q = $fopen("simDataOut_Q.txt");
+	if(!file_out_Q)
+	begin
+		$display("could not open ouput file!");
+		$finish;
+	end
+end	
+
+integer file_nco_out_I;
+initial 
+begin
+	//the file in the dir: proc\simulation\modelsim\
+	
+	file_nco_out_I = $fopen("simDataOutNCO_I.txt");
+	if(!file_nco_out_I)
+	begin
+		$display("could not open ouput file!");
+		$finish;
+	end
+end	
+
+integer file_nco_out_Q;
+initial 
+begin
+	//the file in the dir: proc\simulation\modelsim\
+	
+	file_nco_out_Q = $fopen("simDataOutNCO_Q.txt");
+	if(!file_nco_out_Q)
+	begin
+		$display("could not open ouput file!");
+		$finish;
+	end
+end	
+
+wire rst_write;
+wire signed [15:0] dout_s_I;
+wire signed [15:0] dout_s_Q;
+
+assign dout_s_I = Data_Out_I;
+assign dout_s_Q = Data_Out_Q;
+
+assign rst_write = CLK & (nRST); 			// generate write clk, doesn't write in reset time;
+
+always @(posedge rst_write)
+	begin
+		$fdisplay(file_out_I, "%d", dout_s_I);
+		$fdisplay(file_out_Q, "%d", dout_s_Q);
+		
+		$fdisplay(file_nco_out_I, "%d", NCO_Data_Out_I);
+		$fdisplay(file_nco_out_Q, "%d", NCO_Data_Out_Q);
+	end
+	
+                                     
+always                                                 
+// optional sensitivity list                           
+// @(event1 or event2 or .... eventn)                  
+begin                                                  
+// code executes for every event on sensitivity list   
+// insert code here --> begin                          
+                                                       
+@eachvec;                                              
+// --> end                                             
+end                                                    
+endmodule
+

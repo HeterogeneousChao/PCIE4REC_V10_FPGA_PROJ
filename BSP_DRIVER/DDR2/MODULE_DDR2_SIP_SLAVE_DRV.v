@@ -1,0 +1,133 @@
+module MODULE_DDR2_SIP_SLAVE_DRV
+(
+	CLK, nRST,
+	ddr2_addr, ddr2_ck, ddr2_ckn, ddr2_cke, ddr2_csn, ddr2_rasn, ddr2_casn, ddr2_wen, ddr2_odt,
+	ddr2_ba, ddr2_dq, ddr2_dqs,
+	seriesterminationcontrol, parallelterminationcontrol, dll_pll_locked, dll_delayctrl
+);
+
+
+	input  wire CLK;
+	input  wire nRST;
+	
+	// DDR2 
+	output wire [12:0] ddr2_addr;         //           memory.mem_a
+	output wire [2:0]  ddr2_ba;             //                 .mem_ba
+	output wire [0:0]  ddr2_ck;            //                 .mem_ck
+	output wire [0:0]  ddr2_ckn;           //                 .mem_ck_n
+	output wire [0:0]  ddr2_cke;           //                 .mem_cke
+	output wire [0:0]  ddr2_csn;           //                 .mem_cs_n
+	output wire [0:0]  ddr2_rasn;          //                 .mem_ras_n
+	output wire [0:0]  ddr2_casn;          //                 .mem_cas_n
+	output wire [0:0]  ddr2_wen;          //                  .mem_we_n
+	inout  wire [15:0] ddr2_dq;             //                 .mem_dq
+	inout  wire [1:0]  ddr2_dqs;            //                 .mem_dqs
+	output wire [0:0]  ddr2_odt;           //                 .mem_odt
+
+	input  wire [15:0]  seriesterminationcontrol;   //      oct_sharing.seriesterminationcontrol
+	input  wire [15:0]  parallelterminationcontrol; //                 .parallelterminationcontrol
+	output wire [0:0]   dll_pll_locked;             //      dll_sharing.dll_pll_locked
+	input  wire [6:0]   dll_delayctrl;               //                 .dll_delayctrl
+
+	
+	
+	
+	reg [31:0] 	rCount;
+	
+	wire [0:0]  soft_reset_n;       //       soft_reset.reset_n
+	wire [0:0]  afi_clk;            //          afi_clk.clk
+	wire [0:0]  afi_half_clk;       //     afi_half_clk.clk
+	wire [0:0]  afi_reset_n;        //        afi_reset.reset_n
+	wire [0:0]  afi_reset_export_n; // 		afi_reset_export.reset_n
+	wire [0:0]  avl_ready;          //              avl.waitrequest_n
+	wire [0:0]  avl_burstbegin;     //                 .beginbursttransfer
+	wire [23:0] avl_addr;           //                 .address
+	wire [0:0]  avl_rdata_valid;    //                 .readdatavalid
+	wire [63:0] avl_rdata;          //                 .readdata
+	wire [63:0] avl_wdata;          //                 .writedata
+	wire [0:0]  avl_read_req;       //                 .read
+	wire [0:0]  avl_write_req;      //                 .write
+	wire [0:0]  avl_size;           //                 .burstcount
+	wire [0:0]  local_init_done;    //           status.local_init_done
+	wire [0:0]  local_cal_success;  //                 .local_cal_success
+	wire [0:0]  local_cal_fail;     //                 .local_cal_fail
+	
+
+	always @( posedge CLK or negedge nRST)
+	begin	
+		if (!nRST)
+			rCount = 32'd0;
+		else if ( rCount == 32'd5000)
+			rCount = 32'd0;
+		else
+			rCount = rCount + 1;
+		
+	end
+	
+	
+	DDR2_CTL a1_ddr2_ctl_inst
+	(
+		.CLK(CLK),
+		.nRST(nRST),
+		.afi_clk            (afi_clk),            //          afi_clk.clk
+		.afi_half_clk       (afi_half_clk),       //     afi_half_clk.clk
+		.afi_reset_n        (afi_reset_n),        //        afi_reset.reset_n
+		.afi_reset_export_n (afi_reset_export_n), // afi_reset_export.reset_n
+		.avl_ready          (avl_ready),          //              avl.waitrequest_n
+		.avl_burstbegin     (avl_burstbegin),     //                 .beginbursttransfer
+		.avl_addr           (avl_addr),           //                 .address
+		.avl_rdata_valid    (avl_rdata_valid),    //                 .readdatavalid
+		.avl_rdata          (avl_rdata),          //                 .readdata
+		.avl_wdata          (avl_wdata),          //                 .writedata
+		.avl_read_req       (avl_read_req),       //                 .read
+		.avl_write_req      (avl_write_req),      //                 .write
+		.avl_size           (avl_size),           //                 .burstcount
+		.local_init_done    (local_init_done),    //           status.local_init_done
+		.local_cal_success  (local_cal_success),  //                 .local_cal_success
+		.local_cal_fail     (local_cal_fail)      //                 .local_cal_fail
+	);
+	
+	
+	DDR2_SIP_DQ16BIT_IP_SLAVE  ddr2_sip_dq16bit_slave_inst (	
+		.pll_ref_clk        (CLK),		  //      pll_ref_clk.clk
+		.global_reset_n     (nRST),     		  //     global_reset.reset_n
+		
+		.soft_reset_n       (soft_reset_n),       //       soft_reset.reset_n
+		.afi_clk            (afi_clk),            //          afi_clk.clk
+		.afi_half_clk       (afi_half_clk),       //     afi_half_clk.clk
+		.afi_reset_n        (afi_reset_n),        //        afi_reset.reset_n
+		.afi_reset_export_n (afi_reset_export_n), // afi_reset_export.reset_n
+		
+		.mem_a              (ddr2_addr),              //           memory.mem_a
+		.mem_ba             (ddr2_ba),             //                 .mem_ba
+		.mem_ck             (ddr2_ck),             //                 .mem_ck
+		.mem_ck_n           (ddr2_ckn),           //                 .mem_ck_n
+		.mem_cke            (ddr2_cke),            //                 .mem_cke
+		.mem_cs_n           (ddr2_csn),           //                 .mem_cs_n
+		.mem_ras_n          (ddr2_rasn),          //                 .mem_ras_n
+		.mem_cas_n          (ddr2_casn),          //                 .mem_cas_n
+		.mem_we_n           (ddr2_wen),           //                 .mem_we_n
+		.mem_dq             (ddr2_dq),             //                 .mem_dq
+		.mem_dqs            (ddr2_dqs),            //                 .mem_dqs
+		.mem_odt            (ddr2_odt),            //                 .mem_odt
+		.avl_ready          (avl_ready),          //              avl.waitrequest_n
+		.avl_burstbegin     (avl_burstbegin),     //                 .beginbursttransfer
+		.avl_addr           (avl_addr),           //                 .address
+		.avl_rdata_valid    (a1_avl_rdata_valid),    //                 .readdatavalid
+		.avl_rdata          (avl_rdata),          //                 .readdata
+		.avl_wdata          (avl_wdata),          //                 .writedata
+		.avl_read_req       (avl_read_req),       //                 .read
+		.avl_write_req      (avl_write_req),      //                 .write
+		.avl_size           (avl_size),           //                 .burstcount
+		.local_init_done    (local_init_done),    //           status.local_init_done
+		.local_cal_success  (local_cal_success),  //                 .local_cal_success
+		.local_cal_fail     (local_cal_fail),     //                 .local_cal_fail
+		
+		.seriesterminationcontrol(seriesterminationcontrol),   //      oct_sharing.seriesterminationcontrol
+		.parallelterminationcontrol(parallelterminationcontrol), //                 .parallelterminationcontrol
+		.dll_pll_locked(dll_pll_locked),             //      dll_sharing.dll_pll_locked
+		.dll_delayctrl(dll_delayctrl)               //                 .dll_delayctrl
+	);
+endmodule
+
+			

@@ -1,0 +1,332 @@
+// Copyright (C) 1991-2014 Altera Corporation
+// Your use of Altera Corporation's design tools, logic functions 
+// and other software and tools, and its AMPP partner logic 
+// functions, and any output files from any of the foregoing 
+// (including device programming or simulation files), and any 
+// associated documentation or information are expressly subject 
+// to the terms and conditions of the Altera Program License 
+// Subscription Agreement, Altera MegaCore Function License 
+// Agreement, or other applicable license agreement, including, 
+// without limitation, that your use is for the sole purpose of 
+// programming logic devices manufactured by Altera and sold by 
+// Altera or its authorized distributors.  Please refer to the 
+// applicable agreement for further details.
+
+// *****************************************************************************
+// This file contains a Verilog test bench template that is freely editable to  
+// suit user's needs .Comments are provided in each section to help the user    
+// fill out necessary details.                                                  
+// *****************************************************************************
+// Generated on "04/16/2018 22:34:54"
+                                                                                
+// Verilog Test Bench template for design : MODULE_NCO
+// 
+// Simulation tool : ModelSim-Altera (Verilog)
+// 
+
+`timescale 1 ps/ 1 ps
+module MODULE_NCO_vlg_tst();
+// constants                                           
+// general purpose registers
+reg eachvec;
+/////////////////////////////////////////////////////////////////////
+//// CIC Simulation Parameters
+parameter  clk_period      		= 200;                        		// clk frequency: 5MHz;
+parameter  clk_half_period 	 	= clk_period / 2;  
+parameter  clk_period_1M 		= clk_period * 5;     
+parameter  clk_half_period_1M   = clk_half_period * 5;
+parameter  data_num   	   		= 3000;       
+
+parameter  init_config_time     = 3000;               		// simulate data length;
+parameter  time_sim 	   		= (data_num * clk_half_period) + init_config_time; 	// simulate time;
+
+
+parameter CONFIT_WIDTH  		= 32;
+
+parameter FRE_MOD_WIDTH			= 32;
+parameter PHA_MOD_WIDTH    		= 32;
+parameter CONFIT_CTL_WIDTH 		= 4;
+parameter OUTPUT_WIDTH     		= 16;
+
+
+parameter ACCUMULATE_WIDTH = 32;
+parameter ROM_ADDR_WIDTH   = 16;
+parameter ROM_DATA_WIDTH   = 16;
+
+parameter INC_PHA_MOD_1MHz  = 42949672; 		// 1MHz
+parameter INC_PHA_MOD_5MHz  = 214748364;		// 5MHz
+parameter INC_PHA_MOD_10MHz = 429496729; 		// 10MHz
+
+parameter ACC_LENGTH = 4294967295;
+//parameter ROM_LENGTH = 65536; 	    // 2^ROM_ADDR_WIDTH;    // ROM lenth
+parameter OneFourthsPI = 536870912; 	 // pi /4;
+parameter HALF_PI 	   = 1073741824; 			 // pi /2;
+parameter PI = 2147483648; 				 // pi;
+parameter ThreeFourthsPI = 1610612736; // 3pi/4;
+
+//////////////////////////////////////////////////////////////////////////////
+wire [31:0]pha_coef[2:0]; // configPhasMod
+wire [31:0]fre_coef[2:0]; // configFreqMod,
+
+assign pha_coef[0] = OneFourthsPI;
+assign pha_coef[1] = HALF_PI;
+assign pha_coef[2] = ThreeFourthsPI;
+
+assign fre_coef[0] = INC_PHA_MOD_1MHz;
+assign fre_coef[1] = INC_PHA_MOD_5MHz;
+assign fre_coef[2] = INC_PHA_MOD_10MHz;
+
+
+
+// test vector input registers
+reg CLK;
+reg [31:0] Data_Config_In;
+reg [3:0]  configCtl;
+reg [31:0] configFreqMod;
+reg [31:0] configPhasMod;
+reg isConfig;
+reg nRST;
+// wires                                               
+wire [31:0]  configCurPhaInc;
+wire [15:0]  cos_out;
+wire isConfigACK;
+wire isConfigDone;
+wire [15:0]  sin_out;
+
+// assign statements (if any)                          
+MODULE_NCO i1 (
+// port map - connection between master ports and signals/registers   
+	.CLK(CLK),
+	.Data_Config_In(Data_Config_In),
+	.configCtl(configCtl),
+	.configCurPhaInc(configCurPhaInc),
+	.configFreqMod(configFreqMod),
+	.configPhasMod(configPhasMod),
+	.cos_out(cos_out),
+	.isConfig(isConfig),
+	.isConfigACK(isConfigACK),
+	.isConfigDone(isConfigDone),
+	.nRST(nRST),
+	.sin_out(sin_out)
+);
+
+initial                                                
+	begin                                                  
+	// code that executes only once                        
+	// insert code here --> begin                          
+		CLK  = 1;
+		nRST = 0;
+		Data_Config_In = {16{1'b0}};
+		
+		#500 nRST = 1;
+		#time_sim $finish;
+	end         
+
+	
+reg isConfig_reg;
+reg [3:0]state_idx_reg;
+
+initial 
+	begin
+		configFreqMod <= 32'd0;
+		configPhasMod <= 32'd0;
+		configCtl <= 4'b0000;
+		state_idx_reg <= 4'd0;
+		isConfig_reg <= 1'b0;
+		#20000 	isConfig_reg <= 1'b1;
+		#20000	isConfig_reg <= 1'b1;
+		#20000 	isConfig_reg <= 1'b1;
+		#20000	isConfig_reg <= 1'b1;
+		#20000  isConfig_reg <= 1'b1;
+		#20000  isConfig_reg <= 1'b1;
+		#20000  isConfig_reg <= 1'b1;
+		#40000  isConfig_reg <= 1'b1;
+		#40000  isConfig_reg <= 1'b1;
+		// #20000  isConfig_reg <= 1'b1;
+		// #20000  isConfig_reg <= 1'b1;
+	end
+
+//// generate clk
+always 
+begin
+	#clk_half_period CLK = ~CLK;
+end
+	
+reg [2:0] idx_pha_config_reg;
+
+
+initial 
+	idx_pha_config_reg <= 3'd0;
+
+
+// configCtl[0]: update freqMod, 		 configCtl[1]: update phaMod with inc, 
+// configCtl[2]: update phaMod refresh,  configCtl[3]: get current pha inc,  
+
+always @(posedge CLK)
+begin
+	case (state_idx_reg)
+		4'd0:
+			begin
+				if (isConfig_reg)
+					begin
+						isConfig_reg <= 1'b0;
+						idx_pha_config_reg <= idx_pha_config_reg + 1;
+						state_idx_reg <= state_idx_reg + 4'd1;
+					end
+			end
+		4'd1:
+			begin
+				configCtl <= 4'b0010; //
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd2:
+			begin
+				configCtl <= 4'b0000;
+				configPhasMod <= pha_coef[idx_pha_config_reg-1];
+				if (idx_pha_config_reg == 4'd3)
+					begin
+						state_idx_reg <= state_idx_reg + 4'd1;
+					end
+				else
+					begin
+						state_idx_reg <= 4'd0;
+					end
+			end
+		4'd3:
+			begin
+				idx_pha_config_reg <= 3'd0;
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd4:
+			begin
+				if (isConfig_reg)
+					begin
+						isConfig_reg <= 1'b0;
+						idx_pha_config_reg <= idx_pha_config_reg + 1;
+						state_idx_reg <= state_idx_reg + 4'd1;
+					end
+			end
+		4'd5:
+			begin
+				configCtl <= 4'b0100; //
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd6:
+			begin
+				configCtl <= 4'b0000;
+				configPhasMod <= pha_coef[idx_pha_config_reg-1];
+				if (idx_pha_config_reg == 4'd3)
+					begin
+						state_idx_reg <= state_idx_reg + 4'd1;
+					end
+				else
+					begin
+						state_idx_reg <= 4'd4;
+					end
+			end
+		4'd7:
+			begin
+				idx_pha_config_reg <= 3'd0;
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd8:
+			begin
+				if (isConfig_reg)
+					begin
+						isConfig_reg <= 1'b0;
+						idx_pha_config_reg <= idx_pha_config_reg + 1;
+						state_idx_reg <= state_idx_reg + 4'd1;
+					end
+			end
+		4'd9:
+			begin
+				configCtl <= 4'b0001; //
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd10:
+			begin
+				configCtl <= 4'b0000;
+				configFreqMod <= fre_coef[idx_pha_config_reg-1];
+				if (idx_pha_config_reg == 4'd3)
+					begin
+						state_idx_reg <= state_idx_reg + 4'd1;
+					end
+				else
+					begin
+						state_idx_reg <= 4'd8;
+					end
+			end
+		4'd11:
+			begin
+				idx_pha_config_reg <= 3'd0;
+				// NULL 
+			end
+			
+		default:
+			begin
+				// NULL
+			end
+	endcase
+end
+
+	
+
+//// write output d_out to file: simDataOut.txt;
+integer file_sin_out;
+initial 
+begin	
+	file_sin_out = $fopen("simDataSinOut.txt");
+	if(!file_sin_out)
+	begin
+		$display("could not open ouput file!");
+		$finish;
+	end
+end	
+
+//// write output d_out to file: simDataOut.txt;
+integer file_cos_out;
+initial 
+begin	
+	file_cos_out = $fopen("simDataCosOut.txt");
+	if(!file_cos_out)
+	begin
+		$display("could not open ouput file!");
+		$finish;
+	end
+end	
+
+wire rst_write;
+wire signed [OUTPUT_WIDTH-1:0] dout_sin;
+wire signed [OUTPUT_WIDTH-1:0] dout_cos;
+
+assign dout_sin = sin_out;
+assign dout_cos = cos_out;
+
+assign rst_write = CLK & (nRST);  // generate write clk, doesn't write in reset time;
+
+always @(posedge rst_write)
+	$fdisplay(file_sin_out, "%d", dout_sin); 
+		 
+always @(posedge rst_write)
+	$fdisplay(file_cos_out, "%d", dout_cos); 
+
+initial                                                
+begin                                                  
+// code that executes only once                        
+// insert code here --> begin                          
+                                                       
+// --> end                                             
+$display("Running testbench");                       
+end                                                    
+always                                                 
+// optional sensitivity list                           
+// @(event1 or event2 or .... eventn)                  
+begin                                                  
+// code executes for every event on sensitivity list   
+// insert code here --> begin                          
+                                                       
+@eachvec;                                              
+// --> end                                             
+end                                                    
+endmodule
+

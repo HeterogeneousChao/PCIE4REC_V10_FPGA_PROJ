@@ -1,0 +1,180 @@
+module MODULE_QUAD_MIXER (
+	CLK, nRST,
+	isConfig,
+	Data_Config_In,
+	isConfigACK,
+	isConfigDone,
+	
+	Data_In,
+	Data_Out_I,
+	Data_Out_Q,
+	
+	NCO_Data_Out_I,
+	NCO_Data_Out_Q,
+	
+	Data_In_Valid,
+	Data_Out_Valid
+);
+
+	/// CLK: 100MHz
+	/// Flo: 10MHz
+	
+	parameter INPUT_WIDTH   	 =  16;
+	parameter OUTPUT_WIDTH  	 =  16;
+	
+	parameter MULT_OUTPUT_WIDTH  =  32;
+	
+	// NCO PARAMETERS
+	parameter NCO_CONFIT_WIDTH  	  = 32;
+	parameter NCO_FRE_MOD_WIDTH		  = 32;
+	parameter NCO_PHA_MOD_WIDTH    	  = 32;
+	parameter NCO_CONFIT_CTL_WIDTH 	  = 4;
+	parameter NCO_OUTPUT_WIDTH     	  = 16;
+	parameter NCO_ACCUMULATE_WIDTH 	  = 32;
+	parameter NCO_ROM_ADDR_WIDTH   	  = 16;
+	parameter NCO_ROM_DATA_WIDTH   	  = 16;
+	parameter NCO_DEFAULT_INC_PHA_MOD = 429496728;		// 10MHz
+	
+	
+	
+	input  CLK;
+	input  nRST;
+
+	input  isConfig;
+	// Data_Config_In[0]: configFreqMod,
+	// Data_Config_In[1]: configPhasMod;
+	input  [NCO_CONFIT_WIDTH-1:0] 		Data_Config_In;
+	
+	output isConfigACK;
+	output isConfigDone;
+	
+	input  signed [INPUT_WIDTH-1:0]     Data_In;
+	output signed [OUTPUT_WIDTH-1:0]    Data_Out_I;
+	output signed [OUTPUT_WIDTH-1:0]    Data_Out_Q;
+	
+	output signed [OUTPUT_WIDTH-1:0]	NCO_Data_Out_I;
+	output signed [OUTPUT_WIDTH-1:0]	NCO_Data_Out_Q;
+	
+	input  Data_In_Valid;
+	output Data_Out_Valid;
+	
+	wire  signed [MULT_OUTPUT_WIDTH-1:0] wData_Out_I;
+	wire  signed [MULT_OUTPUT_WIDTH-1:0] wData_Out_Q;
+	
+	// wire  signed [NCO_OUTPUT_WIDTH-1:0]  wNCO_Data_Sin;
+	// wire  signed [NCO_OUTPUT_WIDTH-1:0]  wNCO_Data_Cos;
+	
+	wire  signed [NCO_OUTPUT_WIDTH-1:0]  wNCO_Data_Out_Sin;
+	wire  signed [NCO_OUTPUT_WIDTH-1:0]  wNCO_Data_Out_Cos;
+	//wire NCO_Data_Out_Valid;
+	
+	// assign wNCO_Data_Sin = wNCO_Data_Out_Sin;
+	// assign wNCO_Data_Cos = wNCO_Data_Out_Cos;
+	// assign wNCO_Data_Sin = ((DataInValid) ? wNCO_Data_Out_Sin : {NCO_OUTPUT_WIDTH{1'b0}});
+	// assign wNCO_Data_Cos = ((DataInValid) ? wNCO_Data_Out_Cos : {NCO_OUTPUT_WIDTH{1'b0}});
+	
+	MODULE_NCO #( 
+			.CONFIT_WIDTH(NCO_CONFIT_WIDTH),
+			.FRE_MOD_WIDTH(NCO_FRE_MOD_WIDTH),
+			.PHA_MOD_WIDTH(NCO_PHA_MOD_WIDTH),
+			.CONFIT_CTL_WIDTH(NCO_CONFIT_CTL_WIDTH),
+			.OUTPUT_WIDTH(NCO_OUTPUT_WIDTH),
+			.ACCUMULATE_WIDTH(NCO_ACCUMULATE_WIDTH),
+			.ROM_ADDR_WIDTH(NCO_ROM_ADDR_WIDTH),
+			.ROM_DATA_WIDTH(NCO_ROM_DATA_WIDTH),
+			.DEFAULT_INC_PHA_MOD(NCO_DEFAULT_INC_PHA_MOD)
+		)module_nco_inst(
+		// parameter CONFIT_WIDTH  		= 32;
+		// parameter FRE_MOD_WIDTH			= 32;
+		// parameter PHA_MOD_WIDTH    		= 32;
+		// parameter CONFIT_CTL_WIDTH 		= 4;
+		// parameter OUTPUT_WIDTH     		= 16;
+		// parameter ACCUMULATE_WIDTH = 32;
+		// parameter ROM_ADDR_WIDTH   = 16;
+		// parameter ROM_DATA_WIDTH   = 16;
+		// parameter DEFAULT_INC_PHA_MOD = 214748364;		// 5MHz
+			.CLK(CLK), .nRST(nRST),
+			
+			.isConfig(isConfig),
+			.Data_Config_In(Data_Config_In),
+
+			.configFreqMod(configFreqMod),
+			.configPhasMod(configPhasMod),
+			.configCtl(configCtl),
+			.isConfigACK(isConfigACK),
+			.isConfigDone(isConfigDone),
+			
+			.configCurPhaInc(configCurPhaInc),
+			.dataOutEnable(DataInValid),
+			.sin_out(wNCO_Data_Out_Sin),
+			.cos_out(wNCO_Data_Out_Cos)
+		);
+		
+	reg dataValidInPreState;
+	
+	always @( posedge CLK, negedge nRST, posedge Data_In_Valid, negedge Data_In_Valid)
+		if (!nRST)
+			begin
+				dataValidInPreState <= 1'b0;
+			end
+		else
+			begin
+				dataValidInPreState <= Data_In_Valid;
+			end
+	
+	reg  signed [NCO_OUTPUT_WIDTH-1:0]  nco_out_sin_reg;
+	reg  signed [NCO_OUTPUT_WIDTH-1:0]  nco_out_cos_reg;
+	reg  signed [MULT_OUTPUT_WIDTH-1:0] rData_Out_I;
+	reg  signed [MULT_OUTPUT_WIDTH-1:0] rData_Out_Q;
+	reg  rDataOutValid;
+	
+	always @( posedge CLK, negedge nRST, posedge Data_In_Valid, negedge Data_In_Valid)
+		if (!nRST)
+			begin
+				rData_Out_Valid <= 1'b0;
+				nco_out_sin_reg <= {NCO_OUTPUT_WIDTH{1'b0}};
+				nco_out_cos_reg <= {NCO_OUTPUT_WIDTH{1'b0}};
+				rData_Out_I <= {MULT_OUTPUT_WIDTH{1'b0}};
+				rData_Out_Q <= {MULT_OUTPUT_WIDTH{1'b0}};
+			end
+		else
+			begin
+			
+				rData_Out_Valid <= 1'b0;
+				
+				if ({{dataValidInPreState},{Data_In_Valid}} == 2'b01) 
+					begin
+						nco_out_sin_reg <= wNCO_Data_Out_Sin;
+						nco_out_cos_reg <= wNCO_Data_Out_Cos;
+					end
+				if ({{dataValidInPreState},{Data_In_Valid}} == 2'b10)
+					begin
+						rData_Out_I <= wData_Out_I;
+						rData_Out_Q <= wData_Out_Q;
+						rData_Out_Valid <= 1'b1;
+					end
+			end
+	
+	LPM_MULT_IP lpm_mult_ip_inst_i(
+		.clock(DataInValid),
+		.dataa(Data_In),
+		.datab(wNCO_Data_Sin),
+		.result(wData_Out_I));
+		
+	LPM_MULT_IP lpm_mult_ip_inst_q(
+		.clock(DataInValid),
+		.dataa(Data_In),
+		.datab(wNCO_Data_Cos),
+		.result(wData_Out_Q));
+	
+	assign NCO_Data_Out_I = nco_out_sin_reg;
+	assign NCO_Data_Out_Q = nco_out_cos_reg;
+
+	assign Data_Out_I = ((nRST) ? wData_Out_I[MULT_OUTPUT_WIDTH-1:MULT_OUTPUT_WIDTH-OUTPUT_WIDTH] 
+								: {OUTPUT_WIDTH{1'b0}});
+	assign Data_Out_Q = ((nRST) ? wData_Out_Q[MULT_OUTPUT_WIDTH-1:MULT_OUTPUT_WIDTH-OUTPUT_WIDTH]
+								: {OUTPUT_WIDTH{1'b0}});
+	assign Data_Out_Valid = rData_Out_Valid;
+
+
+endmodule

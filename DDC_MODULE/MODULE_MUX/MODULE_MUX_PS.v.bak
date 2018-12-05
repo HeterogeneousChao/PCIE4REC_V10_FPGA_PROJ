@@ -1,0 +1,331 @@
+///////////////////////////////////////////////////////////////////////////////////
+////  MODULE MUX PARALLEL -> SERIAL
+////					MODULE_MUX_PS
+////         					ZHAOCHAO
+////									 20180507
+///////////////////////////////////////////////////////////////////////////////////////////
+////
+
+module MODULE_MUX_PS(
+	CLK, nRST,
+
+	Data_In_I,
+	Data_In_I_Valid,
+	Data_In_Q,
+	Data_In_Q_Valid,
+	
+	Data_Out,
+	Data_Out_Valid,
+	Data_Out_ChIdx
+);
+	
+	parameter INPUT_WIDTH   = 24;
+	parameter OUTPUT_WIDTH  = 24;
+	
+	parameter DATA_OUT_CLK_NUM = 8;
+	
+	
+	input  CLK;
+	input  nRST;
+	
+	input  Data_In_I_Valid;
+	input  Data_In_Q_Valid;
+
+	input  signed [INPUT_WIDTH-1:0]  Data_In_I;
+	input  signed [INPUT_WIDTH-1:0]  Data_In_Q;
+	
+	output Data_Out_Valid;
+	output [3:0]Data_Out_ChIdx;
+	output signed [OUTPUT_WIDTH-1:0] Data_Out;
+	
+	
+	wire  wFIFOI_wreq;
+	wire  wFIFOQ_wreq;
+	
+	wire  wFIFOI_full;
+	wire  wFIFOQ_full;
+	
+	
+///////////////////////////////////////////////////////////////////////////////////////////
+//// Write Data to FIFO 
+	reg  rFIFOI_wreq_clk;
+	reg  rFIFOI_wreq_datv;
+	reg  rFIFOQ_wreq_clk;
+	reg  rFIFOQ_wreq_datv;
+	
+	reg signed [INPUT_WIDTH-1:0] rFIFOI_data_wr;
+	reg signed [INPUT_WIDTH-1:0] rFIFOQ_data_wr;
+	
+	// I channel
+	// negedge Data_In_Valid, capture the data;
+	always @(negedge nRST or negedge Data_In_I_Valid)
+		if(!nRST)
+			begin
+				rFIFOI_data_wr <= {INPUT_WIDTH{1'b0}};
+			end
+		else
+			begin
+				rFIFOI_data_wr <= Data_In_I;
+			end
+	// posedge Data_In_Valid, valid the fifo write req;
+	always @(negedge nRST or posedge Data_In_I_Valid)
+		if(!nRST)
+			begin
+				rFIFOI_wreq_datv <= 1'b0;
+			end
+		else
+			if (wFIFOI_full)
+				begin
+					// fifo full;
+				end
+			else 
+				begin
+					rFIFOI_wreq_datv <= ~rFIFOI_wreq_datv;
+				end	
+		always @(posedge CLK or negedge nRST)
+		if (!nRST)
+			begin
+				rFIFOI_wreq_clk <= 1'b1;
+			end
+		else
+			begin
+				if (rFIFOI_wreq_clk == rFIFOI_wreq_datv)
+					begin
+						rFIFOI_wreq_clk = ~rFIFOI_wreq_clk;
+					end
+			end		
+	// Q channel		
+	// negedge Data_In_Valid, capture the data;
+	always @(negedge nRST or negedge Data_In_Q_Valid)
+		if(!nRST)
+			begin
+				rFIFOQ_data_wr <= {INPUT_WIDTH{1'b0}};
+			end
+		else
+			begin
+				rFIFOQ_data_wr <= Data_In_Q;
+			end
+	// posedge Data_In_Valid, valid the fifo write req;
+	always @(negedge nRST or posedge Data_In_Q_Valid)
+		if(!nRST)
+			begin
+				rFIFOQ_wreq_datv <= 1'b0;
+			end
+		else
+			if (wFIFOQ_full)
+				begin
+					// fifo full;
+				end
+			else 
+				begin
+					rFIFOQ_wreq_datv <= ~rFIFOQ_wreq_datv;
+				end	
+		always @(posedge CLK or negedge nRST)
+		if (!nRST)
+			begin
+				rFIFOQ_wreq_clk <= 1'b1;
+			end
+		else
+			begin
+				if (rFIFOQ_wreq_clk == rFIFOQ_wreq_datv)
+					begin
+						rFIFOQ_wreq_clk = ~rFIFOQ_wreq_clk;
+					end
+			end		
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//// Read data from FIFO and output	
+	
+	wire  wempty_sig_I;
+	wire  wempty_sig_Q;
+	
+	wire  wFIFOI_rdeq;
+	wire  wFIFOQ_rdeq;
+	
+	wire [3:0]  wusedw_I;
+	wire [3:0]  wusedw_Q;
+	
+	wire signed [OUTPUT_WIDTH-1:0] wFIFOI_data_rd;
+	wire signed [OUTPUT_WIDTH-1:0] wFIFOQ_data_rd;
+
+	
+	reg  rFIFOI_rdeq;
+	reg  rFIFOQ_rdeq;
+	
+	reg signed [OUTPUT_WIDTH-1:0] rData_Out_reg;
+	reg [3:0] rData_Out_ChIdx_reg; // default(InValid): 0, I channle: 1,  Q channel 2;
+	
+	reg [4:0] cnt_divClk_reg;
+	reg [2:0] state_idx_reg;
+	// data distribute;
+	always @(negedge CLK or negedge nRST)
+		if(!nRST)
+			begin
+				rFIFOI_rdeq <= 1'b0;
+				rFIFOQ_rdeq <= 1'b0;
+				
+				rData_Out_reg <= {OUTPUT_WIDTH{1'b0}};
+				rData_Out_ChIdx_reg <= 4'd0;
+				
+				cnt_divClk_reg <= 5'd0;
+				state_idx_reg  <= 3'd0;
+			end
+		else
+			case(state_idx_reg)
+				3'd0:
+					begin
+						// fifo half full trig data output  
+						if ((!wempty_sig_I) || (!wempty_sig_Q))
+							begin
+								cnt_divClk_reg <= 5'd0;
+								rData_Out_ChIdx_reg <= 4'd0;
+								state_idx_reg  <= state_idx_reg + 1;
+							end
+					end
+				3'd1: // I channel
+					begin
+						if (wempty_sig_I)
+							begin
+								// FIFO I empty;
+								state_idx_reg  <= state_idx_reg + 1;
+							end
+						else
+							begin
+								rFIFOI_rdeq <= 1'b1;
+								rData_Out_ChIdx_reg <= 4'd1;
+								state_idx_reg  <= state_idx_reg + 1;
+							end
+					end
+				3'd2:
+					begin
+						rFIFOI_rdeq   <= 1'b0;
+						rData_Out_reg <= wFIFOI_data_rd;
+						if (cnt_divClk_reg == DATA_OUT_CLK_NUM) 
+							begin
+								cnt_divClk_reg <= 5'd0;
+								state_idx_reg  <= state_idx_reg + 1;
+							end
+						else
+							begin
+								cnt_divClk_reg <= cnt_divClk_reg + 1;
+							end
+					end
+				3'd3: // Q channel
+					begin
+						if (wempty_sig_Q)
+							begin
+								// FIFO Q empty;
+								state_idx_reg  <= state_idx_reg + 1;
+							end
+						else
+							begin
+								rFIFOQ_rdeq   <= 1'b1;
+								rData_Out_ChIdx_reg <= 4'd2;
+								state_idx_reg  <= state_idx_reg + 1;
+							end
+					end
+				3'd4:
+					begin
+						rFIFOQ_rdeq   <= 1'b0;
+						rData_Out_reg <= wFIFOQ_data_rd;
+						if (cnt_divClk_reg == DATA_OUT_CLK_NUM) 
+							begin
+								cnt_divClk_reg <= 5'd0;
+								state_idx_reg  <= 3'd0;
+							end
+						else
+							begin
+								cnt_divClk_reg <= cnt_divClk_reg + 1;
+							end
+					end
+				default:
+					begin
+						state_idx_reg <= 3'd0;
+					end
+				
+			endcase
+
+///////////////////////////////////////////////////////////////////////////
+//// output align 
+	reg [2:0] align_state_idx_reg;
+	reg rData_Out_Valid;
+	reg [3:0]rData_Out_ChIdx; // default(InValid): 0, I channle: 1,  Q channel 2;
+	reg signed [OUTPUT_WIDTH-1:0] rData_Out;
+	
+	always @( posedge CLK or negedge nRST)
+		if (!nRST)
+			begin
+				rData_Out_Valid <= 1'b0;
+				rData_Out_ChIdx <= 4'd0;
+				rData_Out <= {OUTPUT_WIDTH{1'b0}};
+				
+				align_state_idx_reg <= 3'd0;
+			end
+		else
+			case(align_state_idx_reg)
+				3'd0:
+					begin
+						rData_Out_Valid <= 1'b0;
+						if (rFIFOI_rdeq or rFIFOQ_rdeq)
+							begin
+								align_state_idx_reg <= 3'd1;
+							end
+					end
+				3'd1: // I Channel;
+					begin
+						rData_Out_Valid <= 1'b1;
+						rData_Out <= rData_Out_reg;
+						rData_Out_ChIdx <= rData_Out_ChIdx_reg;
+						align_state_idx_reg <= align_state_idx_reg + 1; 
+					end
+				3'd2:
+					begin
+						rData_Out_Valid <= 1'b0;
+						align_state_idx_reg <= 3'd0;
+					end
+				default:
+					begin
+						align_state_idx_reg <= 3'd0;
+					end
+					
+					
+			endcase
+					
+	assign Data_Out = rData_Out;
+	assign Data_Out_Valid = rData_Out_Valid;
+	assign Data_Out_ChIdx = rData_Out_ChIdx;
+	
+///////////////////////////////////////////////////////////////////////////
+//// FIFO instance
+
+	assign  wFIFOI_wreq = ((rFIFOI_wreq_clk == rFIFOI_wreq_datv) ? 1'b1 : 1'b0);
+	assign  wFIFOQ_wreq = ((rFIFOQ_wreq_clk == rFIFOQ_wreq_datv) ? 1'b1 : 1'b0);
+	
+	assign  wFIFOI_rdeq = rFIFOI_rdeq;
+	assign  wFIFOQ_rdeq = rFIFOQ_rdeq;
+	
+	FIFO_24BIT16WS_IP	fifo_24bit16ws_ip_i_inst (
+		.clock ( CLK ),
+		.data ( rFIFOI_data_wr ),
+		.rdreq ( wFIFOI_rdeq ),
+		.wrreq ( wFIFOI_wreq ),
+		.empty ( wempty_sig_I ),
+		.full ( wFIFOI_full ),
+		.q ( wFIFOI_data_rd ),
+		.usedw ( wusedw_I )
+	);
+	
+
+	FIFO_24BIT16WS_IP	fifo_24bit16ws_ip_q_inst (
+		.clock ( CLK ),
+		.data ( rFIFOQ_data_wr ),
+		.rdreq ( wFIFOQ_rdeq ),
+		.wrreq ( wFIFOQ_wreq ),
+		.empty ( wempty_sig_Q ),
+		.full ( wFIFOQ_full ),
+		.q ( wFIFOI_data_rd ),
+		.usedw ( wusedw_Q )
+	);
+	
+
+endmodule

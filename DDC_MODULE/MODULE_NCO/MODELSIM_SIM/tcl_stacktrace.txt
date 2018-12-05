@@ -1,0 +1,7 @@
+Mon Apr 16 23:55:01 ?????? 2018
+Trace back: wrong # args: should be "mti_popupinternal menu w"
+    while executing
+"mti_popupinternal .signalspopup_popup "
+    ("after" script)
+  <2: ::tkerror {wrong # args: should be "mti_popupinternal menu w"}
+  <1: ::bgerror {wrong # args: should be "mti_popupinternal menu w"}

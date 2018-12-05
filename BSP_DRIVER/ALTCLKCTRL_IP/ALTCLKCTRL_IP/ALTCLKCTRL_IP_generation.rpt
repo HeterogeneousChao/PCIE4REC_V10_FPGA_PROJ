@@ -1,0 +1,72 @@
+Info: Starting: Create simulation model
+Info: qsys-generate C:\Users\47968\Desktop\PCIE4REC_V10\REC_FPGA_SRC\IOVerify_v5_for5CGXFC9_15_0\SRC\ALTCLKCTRL_IP\ALTCLKCTRL_IP.qsys --simulation=VERILOG --output-directory=C:\Users\47968\Desktop\PCIE4REC_V10\REC_FPGA_SRC\IOVerify_v5_for5CGXFC9_15_0\SRC\ALTCLKCTRL_IP\ALTCLKCTRL_IP\simulation --family="Cyclone V" --part=5CGXFC9D6F27C7
+Progress: Loading ALTCLKCTRL_IP/ALTCLKCTRL_IP.qsys
+Progress: Reading input file
+Progress: Adding altclkctrl_0 [altclkctrl 15.0]
+Progress: Parameterizing module altclkctrl_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: ALTCLKCTRL_IP.altclkctrl_0: Targeting device family: Cyclone V.
+: ALTCLKCTRL_IP.altclkctrl_0: Selecting AUTO allows the compiler to pick the best clock buffer to use, while other values restrict usage to only the given clock buffer.
+: ALTCLKCTRL_IP.altclkctrl_0: The register mode of port 'ena' is unavailable while 'ena' port not added. 
+Info: ALTCLKCTRL_IP: Generating ALTCLKCTRL_IP "ALTCLKCTRL_IP" for SIM_VERILOG
+Info: altclkctrl_0: Generating top-level entity ALTCLKCTRL_IP_altclkctrl_0.
+Info: altclkctrl_0: "ALTCLKCTRL_IP" instantiated altclkctrl "altclkctrl_0"
+Info: ALTCLKCTRL_IP: Done "ALTCLKCTRL_IP" with 2 modules, 2 files
+Info: ip-generate succeeded.
+Info: Finished: Create simulation model
+Info: Starting: Create Modelsim Project.
+Info: sim-script-gen --spd=C:\Users\47968\Desktop\PCIE4REC_V10\REC_FPGA_SRC\IOVerify_v5_for5CGXFC9_15_0\SRC\ALTCLKCTRL_IP\ALTCLKCTRL_IP\ALTCLKCTRL_IP.spd --output-directory=C:/Users/47968/Desktop/PCIE4REC_V10/REC_FPGA_SRC/IOVerify_v5_for5CGXFC9_15_0/SRC/ALTCLKCTRL_IP/ALTCLKCTRL_IP/simulation/ --use-relative-paths=true
+Info: Doing: ip-make-simscript --spd=C:\Users\47968\Desktop\PCIE4REC_V10\REC_FPGA_SRC\IOVerify_v5_for5CGXFC9_15_0\SRC\ALTCLKCTRL_IP\ALTCLKCTRL_IP\ALTCLKCTRL_IP.spd --output-directory=C:/Users/47968/Desktop/PCIE4REC_V10/REC_FPGA_SRC/IOVerify_v5_for5CGXFC9_15_0/SRC/ALTCLKCTRL_IP/ALTCLKCTRL_IP/simulation/ --use-relative-paths=true
+Info: Generating the following file(s) for MODELSIM simulator in C:/Users/47968/Desktop/PCIE4REC_V10/REC_FPGA_SRC/IOVerify_v5_for5CGXFC9_15_0/SRC/ALTCLKCTRL_IP/ALTCLKCTRL_IP/simulation/ directory:
+Info: 	mentor/msim_setup.tcl
+Info: Generating the following file(s) for VCS simulator in C:/Users/47968/Desktop/PCIE4REC_V10/REC_FPGA_SRC/IOVerify_v5_for5CGXFC9_15_0/SRC/ALTCLKCTRL_IP/ALTCLKCTRL_IP/simulation/ directory:
+Info: 	synopsys/vcs/vcs_setup.sh
+Info: Generating the following file(s) for VCSMX simulator in C:/Users/47968/Desktop/PCIE4REC_V10/REC_FPGA_SRC/IOVerify_v5_for5CGXFC9_15_0/SRC/ALTCLKCTRL_IP/ALTCLKCTRL_IP/simulation/ directory:
+Info: 	synopsys/vcsmx/synopsys_sim.setup
+Info: 	synopsys/vcsmx/vcsmx_setup.sh
+Info: Generating the following file(s) for NCSIM simulator in C:/Users/47968/Desktop/PCIE4REC_V10/REC_FPGA_SRC/IOVerify_v5_for5CGXFC9_15_0/SRC/ALTCLKCTRL_IP/ALTCLKCTRL_IP/simulation/ directory:
+Info: 	cadence/cds.lib
+Info: 	cadence/hdl.var
+Info: 	cadence/ncsim_setup.sh
+Info: 	1 .cds.lib files in cadence/cds_libs/ directory
+Info: Generating the following file(s) for RIVIERA simulator in C:/Users/47968/Desktop/PCIE4REC_V10/REC_FPGA_SRC/IOVerify_v5_for5CGXFC9_15_0/SRC/ALTCLKCTRL_IP/ALTCLKCTRL_IP/simulation/ directory:
+Info: 	aldec/rivierapro_setup.tcl
+Info: Finished: Create Modelsim Project.
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate C:\Users\47968\Desktop\PCIE4REC_V10\REC_FPGA_SRC\IOVerify_v5_for5CGXFC9_15_0\SRC\ALTCLKCTRL_IP\ALTCLKCTRL_IP.qsys --block-symbol-file --output-directory=C:\Users\47968\Desktop\PCIE4REC_V10\REC_FPGA_SRC\IOVerify_v5_for5CGXFC9_15_0\SRC\ALTCLKCTRL_IP\ALTCLKCTRL_IP --family="Cyclone V" --part=5CGXFC9D6F27C7
+Progress: Loading ALTCLKCTRL_IP/ALTCLKCTRL_IP.qsys
+Progress: Reading input file
+Progress: Adding altclkctrl_0 [altclkctrl 15.0]
+Progress: Parameterizing module altclkctrl_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: ALTCLKCTRL_IP.altclkctrl_0: Targeting device family: Cyclone V.
+: ALTCLKCTRL_IP.altclkctrl_0: Selecting AUTO allows the compiler to pick the best clock buffer to use, while other values restrict usage to only the given clock buffer.
+: ALTCLKCTRL_IP.altclkctrl_0: The register mode of port 'ena' is unavailable while 'ena' port not added. 
+Info: ip-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate C:\Users\47968\Desktop\PCIE4REC_V10\REC_FPGA_SRC\IOVerify_v5_for5CGXFC9_15_0\SRC\ALTCLKCTRL_IP\ALTCLKCTRL_IP.qsys --synthesis=VERILOG --output-directory=C:\Users\47968\Desktop\PCIE4REC_V10\REC_FPGA_SRC\IOVerify_v5_for5CGXFC9_15_0\SRC\ALTCLKCTRL_IP\ALTCLKCTRL_IP\synthesis --family="Cyclone V" --part=5CGXFC9D6F27C7
+Progress: Loading ALTCLKCTRL_IP/ALTCLKCTRL_IP.qsys
+Progress: Reading input file
+Progress: Adding altclkctrl_0 [altclkctrl 15.0]
+Progress: Parameterizing module altclkctrl_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+: ALTCLKCTRL_IP.altclkctrl_0: Targeting device family: Cyclone V.
+: ALTCLKCTRL_IP.altclkctrl_0: Selecting AUTO allows the compiler to pick the best clock buffer to use, while other values restrict usage to only the given clock buffer.
+: ALTCLKCTRL_IP.altclkctrl_0: The register mode of port 'ena' is unavailable while 'ena' port not added. 
+Info: ALTCLKCTRL_IP: Generating ALTCLKCTRL_IP "ALTCLKCTRL_IP" for QUARTUS_SYNTH
+Info: altclkctrl_0: Generating top-level entity ALTCLKCTRL_IP_altclkctrl_0.
+Info: altclkctrl_0: "ALTCLKCTRL_IP" instantiated altclkctrl "altclkctrl_0"
+Info: ALTCLKCTRL_IP: Done "ALTCLKCTRL_IP" with 2 modules, 2 files
+Info: ip-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

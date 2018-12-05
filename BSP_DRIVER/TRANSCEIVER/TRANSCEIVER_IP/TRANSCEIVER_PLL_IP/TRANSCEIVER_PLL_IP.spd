@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/altera_xcvr_functions.sv"
+   type="SYSTEM_VERILOG"
+   library="TRANSCEIVER_PLL_IP" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/mentor/altera_xcvr_functions.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="TRANSCEIVER_PLL_IP"
+   simulator="modelsim" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/av_xcvr_h.sv"
+   type="SYSTEM_VERILOG"
+   library="TRANSCEIVER_PLL_IP" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/av_xcvr_plls.sv"
+   type="SYSTEM_VERILOG"
+   library="TRANSCEIVER_PLL_IP" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/av_reconfig_bundle_to_xcvr.sv"
+   type="SYSTEM_VERILOG"
+   library="TRANSCEIVER_PLL_IP" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/av_xcvr_avmm_csr.sv"
+   type="SYSTEM_VERILOG"
+   library="TRANSCEIVER_PLL_IP" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/mentor/av_xcvr_h.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="TRANSCEIVER_PLL_IP"
+   simulator="modelsim" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/mentor/av_xcvr_plls.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="TRANSCEIVER_PLL_IP"
+   simulator="modelsim" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/mentor/av_reconfig_bundle_to_xcvr.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="TRANSCEIVER_PLL_IP"
+   simulator="modelsim" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/mentor/av_xcvr_avmm_csr.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="TRANSCEIVER_PLL_IP"
+   simulator="modelsim" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/alt_xcvr_resync.sv"
+   type="SYSTEM_VERILOG"
+   library="TRANSCEIVER_PLL_IP" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/mentor/alt_xcvr_resync.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="TRANSCEIVER_PLL_IP"
+   simulator="modelsim" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/plain_files.txt"
+   type="OTHER"
+   library="TRANSCEIVER_PLL_IP" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/mentor_files.txt"
+   type="OTHER"
+   library="TRANSCEIVER_PLL_IP" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/cadence_files.txt"
+   type="OTHER"
+   library="TRANSCEIVER_PLL_IP" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/synopsys_files.txt"
+   type="OTHER"
+   library="TRANSCEIVER_PLL_IP" />
+ <file
+   path="TRANSCEIVER_PLL_IP_sim/altera_xcvr_pll_cv/aldec_files.txt"
+   type="OTHER"
+   library="TRANSCEIVER_PLL_IP" />
+ <file path="TRANSCEIVER_PLL_IP_sim/TRANSCEIVER_PLL_IP.v" type="VERILOG" />
+ <topLevel name="TRANSCEIVER_PLL_IP" />
+ <deviceFamily name="cyclonev" />
+</simPackage>

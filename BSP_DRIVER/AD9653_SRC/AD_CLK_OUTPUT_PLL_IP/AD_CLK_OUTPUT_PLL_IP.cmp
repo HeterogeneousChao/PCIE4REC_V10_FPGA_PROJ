@@ -1,0 +1,16 @@
+	component AD_CLK_OUTPUT_PLL_IP is
+		port (
+			refclk            : in  std_logic                     := 'X';             -- clk
+			rst               : in  std_logic                     := 'X';             -- reset
+			outclk_0          : out std_logic;                                        -- clk
+			locked            : out std_logic;                                        -- export
+			phase_en          : in  std_logic                     := 'X';             -- phase_en
+			updn              : in  std_logic                     := 'X';             -- updn
+			cntsel            : in  std_logic_vector(4 downto 0)  := (others => 'X'); -- cntsel
+			phase_done        : out std_logic;                                        -- phase_done
+			reconfig_to_pll   : in  std_logic_vector(63 downto 0) := (others => 'X'); -- reconfig_to_pll
+			reconfig_from_pll : out std_logic_vector(63 downto 0);                    -- reconfig_from_pll
+			phout             : out std_logic_vector(7 downto 0)                      -- phout
+		);
+	end component AD_CLK_OUTPUT_PLL_IP;
+

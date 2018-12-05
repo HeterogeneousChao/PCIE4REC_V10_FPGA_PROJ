@@ -1,0 +1,437 @@
+// Copyright (C) 1991-2014 Altera Corporation
+// Your use of Altera Corporation's design tools, logic functions 
+// and other software and tools, and its AMPP partner logic 
+// functions, and any output files from any of the foregoing 
+// (including device programming or simulation files), and any 
+// associated documentation or information are expressly subject 
+// to the terms and conditions of the Altera Program License 
+// Subscription Agreement, Altera MegaCore Function License 
+// Agreement, or other applicable license agreement, including, 
+// without limitation, that your use is for the sole purpose of 
+// programming logic devices manufactured by Altera and sold by 
+// Altera or its authorized distributors.  Please refer to the 
+// applicable agreement for further details.
+
+// *****************************************************************************
+// This file contains a Verilog test bench template that is freely editable to  
+// suit user's needs .Comments are provided in each section to help the user    
+// fill out necessary details.                                                  
+// *****************************************************************************
+// Generated on "04/23/2018 16:55:01"
+                                                                                
+// Verilog Test Bench template for design : DDC_1CHANNEL_SIM
+// 
+// Simulation tool : ModelSim-Altera (Verilog)
+// 
+
+`timescale 1 ps/ 1 ps
+module DDC_4CHANNELs_SIM_vlg_tst();
+// constants                                           
+// general purpose registers
+reg eachvec;
+
+parameter  clk_period      		= 10;                        		// clk frequency: 5MHz;
+parameter  clk_half_period 	 	= clk_period / 2;  
+parameter  clk_period_1M 		= clk_period * 5;     
+parameter  clk_half_period_1M   = clk_half_period * 5;
+parameter  data_num   	   		= 200000;         
+parameter  initial_config_time  = 4000;             		// simulate data length;
+parameter  time_sim 	   		= data_num * clk_half_period * 20 + initial_config_time; 	// simulate time;
+parameter  clk_period_data_in_valid_low = clk_period * 22;
+
+
+////////////////////////////////////////////////////////////////////
+/// 
+parameter INPUT_WIDTH   		  = 16;
+parameter OUTPUT_WIDTH  		  = 24;
+parameter CONFIG_WIDTH 		      = 32;	
+
+parameter QMIXER_CONFIG_DATA_NUM  = 2;
+parameter CIC1_CONFIG_DATA_NUM 	  = 3;
+parameter CICC1_CONFIG_DATA_NUM   = 259;
+parameter CIC2_CONFIG_DATA_NUM 	  = 3;
+parameter CICC2_CONFIG_DATA_NUM   = 259;
+parameter MHBF_CONFIG_DATA_NUM 	  = 176; // 1 + 5*(33 + 2);
+parameter DFIR_CONFIG_DATA_NUM 	  = 516; // 1 + 513 + 2;
+
+parameter CIC_CICC1_CONFIG_DATA_NUM = CIC1_CONFIG_DATA_NUM+CICC1_CONFIG_DATA_NUM;
+parameter CIC_CICC2_CONFIG_DATA_NUM = CIC2_CONFIG_DATA_NUM+CICC2_CONFIG_DATA_NUM;
+
+parameter CONFIG_NUM  =  QMIXER_CONFIG_DATA_NUM+CIC_CICC1_CONFIG_DATA_NUM+CIC_CICC2_CONFIG_DATA_NUM+MHBF_CONFIG_DATA_NUM+DFIR_CONFIG_DATA_NUM;
+
+reg isConfigDone_reg;
+
+
+// test vector input registers
+reg CLK;
+reg [31:0] Data_Config_In;
+reg isConfig;
+reg nRST;
+
+reg signed [15:0] Data_In0;
+reg Data_In0_Valid;
+reg signed [15:0] Data_In1;
+reg Data_In1_Valid;
+reg signed [15:0] Data_In2;
+reg Data_In2_Valid;
+reg signed [15:0] Data_In3;
+reg Data_In3_Valid;
+// wires                                               
+wire signed [23:0]  Data_Out_I0;
+wire Data_Out_I0_Valid;
+wire signed [23:0]  Data_Out_Q0;
+wire Data_Out_Q0_Valid;
+wire signed [23:0]  Data_Out_I1;
+wire Data_Out_I1_Valid;
+wire signed [23:0]  Data_Out_Q1;
+wire Data_Out_Q1_Valid;
+wire signed [23:0]  Data_Out_I2;
+wire Data_Out_I2_Valid;
+wire signed [23:0]  Data_Out_Q2;
+wire Data_Out_Q2_Valid;
+wire signed [23:0]  Data_Out_I3;
+wire Data_Out_I3_Valid;
+wire signed [23:0]  Data_Out_Q3;
+wire Data_Out_Q3_Valid;
+
+
+
+wire isConfigACK;
+wire isConfigDone;
+
+// assign statements (if any)                          
+MODULE_DDC_4CHANNELS i1(
+	.CLK(CLK), .nRST(nRST),
+	
+	.isConfig(isConfig),
+	.Data_Config_In(Data_Config_In),
+	.isConfigACK(isConfigACK),
+	.isConfigDone(isConfigDone),
+	
+	.Data_In0(Data_In0),
+	.Data_In0_Valid(Data_In0_Valid),
+	.Data_Out_I0(Data_Out_I0),
+	.Data_Out_I0_Valid(Data_Out_I0_Valid),
+	.Data_Out_Q0(Data_Out_Q0),
+	.Data_Out_Q0_Valid(Data_Out_Q0_Valid),
+	
+	.Data_In1(Data_In1),
+	.Data_In1_Valid(Data_In1_Valid),
+	.Data_Out_I1(Data_Out_I1),
+	.Data_Out_I1_Valid(Data_Out_I1_Valid),
+	.Data_Out_Q1(Data_Out_Q1),
+	.Data_Out_Q1_Valid(Data_Out_Q1_Valid),
+	
+	.Data_In2(Data_In2),
+	.Data_In2_Valid(Data_In2_Valid),
+	.Data_Out_I2(Data_Out_I2),
+	.Data_Out_I2_Valid(Data_Out_I2_Valid),
+	.Data_Out_Q2(Data_Out_Q2),
+	.Data_Out_Q2_Valid(Data_Out_Q2_Valid),
+	
+	.Data_In3(Data_In3),
+	.Data_In3_Valid(Data_In3_Valid),
+	.Data_Out_I3(Data_Out_I3),
+	.Data_Out_I3_Valid(Data_Out_I3_Valid),
+	.Data_Out_Q3(Data_Out_Q3),
+	.Data_Out_Q3_Valid(Data_Out_Q3_Valid)
+);
+
+
+initial                                                
+	begin                                                  
+	// code that executes only once                        
+	// insert code here --> begin 	
+		isConfigDone_reg = 1'b0;
+		isConfig = 1'b0;
+		CLK  = 1;
+		nRST = 0;
+		Data_In0  = 16'd0;
+		Data_In1  = 16'd0;
+		Data_In2  = 16'd0;
+		Data_In3  = 16'd0;
+		Data_In0_Valid = 1'b0;
+		Data_In1_Valid = 1'b0;
+		Data_In2_Valid = 1'b0;
+		Data_In3_Valid = 1'b0;
+		
+		#500 nRST = 1;
+		#time_sim  $finish;
+		Data_In0  = 16'd0;
+		Data_In1  = 16'd0;
+		Data_In2  = 16'd0;
+		Data_In3  = 16'd0;
+		Data_In0_Valid = 1'b0;
+		Data_In1_Valid = 1'b0;
+		Data_In2_Valid = 1'b0;
+		Data_In3_Valid = 1'b0;
+	// --> end                                             
+	$display("Running testbench");                       
+	end    
+
+//// generate clk
+always 
+	begin
+		#clk_half_period CLK = ~CLK;
+	end
+	 
+//// read test data from file;
+integer Pattern;
+reg	 signed [INPUT_WIDTH-1:0] stimulus0[1:data_num];
+reg	 signed [INPUT_WIDTH-1:0] stimulus1[1:data_num];
+reg	 signed [INPUT_WIDTH-1:0] stimulus2[1:data_num];
+reg	 signed [INPUT_WIDTH-1:0] stimulus3[1:data_num];
+
+reg  signed [CONFIG_WIDTH-1:0] coef1[CONFIG_NUM-1:0];
+reg  signed [CONFIG_WIDTH-1:0] coef2[CONFIG_NUM-1:0];
+
+
+///// CONFIG FILE
+initial 
+	begin
+		$readmemb("configFileBin.txt", coef1);
+	end
+
+reg isConfig_reg;
+reg [7:0]state_idx_reg;
+reg [11:0] idx_config;
+
+initial 
+	begin
+		idx_config <= 12'd0;
+		state_idx_reg <= 8'd0;
+		isConfig_reg <= 1'b0;
+		#600 isConfig_reg <= 1'b1;
+		//#80000  isConfig_reg <= 1'b1;
+	end
+
+
+always @(posedge CLK)
+	begin
+		case (state_idx_reg)
+			8'd0:
+				begin
+					if (isConfig_reg)
+						begin
+							state_idx_reg <= state_idx_reg + 8'd1;
+							isConfig_reg <= 1'b0;
+						end
+				end
+			8'd1:
+				begin
+					isConfig <= 1'b1;
+					state_idx_reg <= state_idx_reg + 8'd1;
+				end
+			8'd2:
+				if (idx_config == CONFIG_NUM)
+					begin
+						idx_config <= 12'd0;
+						state_idx_reg <= state_idx_reg + 8'd1;
+					end
+				else
+					begin
+						isConfig <= 1'b0;
+						Data_Config_In <= coef1[idx_config];
+						idx_config <= idx_config + 1;
+					end
+			8'd3:
+				begin	
+					state_idx_reg <= state_idx_reg + 8'd1;
+				end
+			8'd4:
+				begin
+					// NULL
+				end
+			default:
+				begin
+					// NULL
+				end
+		endcase
+	end
+	
+
+//// DATA IN FILE
+initial 
+	begin
+		$readmemb("signalBin0.txt", stimulus0);
+		$readmemb("signalBin1.txt", stimulus1);
+		$readmemb("signalBin2.txt", stimulus2);
+		$readmemb("signalBin3.txt", stimulus3);
+		Pattern = 0;
+
+		#initial_config_time;
+		repeat(data_num)
+			begin
+				Pattern = Pattern + 1;
+				Data_In0 = stimulus0[Pattern];
+				Data_In1 = stimulus1[Pattern];
+				Data_In2 = stimulus2[Pattern];
+				Data_In3 = stimulus3[Pattern];
+				Data_In0_Valid <= 1;
+				Data_In1_Valid <= 1;
+				Data_In2_Valid <= 1;
+				Data_In3_Valid <= 1;
+				#clk_half_period;
+				Data_In0_Valid <= 0;
+				Data_In1_Valid <= 0;
+				Data_In2_Valid <= 0;
+				Data_In3_Valid <= 0;
+				#clk_half_period;
+				#clk_period;
+			end
+	end
+
+
+//// write output d_out to file: simDataOut.txt;
+integer file_out_I0;
+integer file_out_Q0;
+integer file_out_I1;
+integer file_out_Q1;
+integer file_out_I2;
+integer file_out_Q2;
+integer file_out_I3;
+integer file_out_Q3;
+
+initial 
+	begin
+		//the file in the dir: proc\simulation\modelsim\
+		
+		file_out_I0 = $fopen("simDataOutI0.txt");
+		if(!file_out_I0)
+		begin
+			$display("could not open ouput I0 file!");
+			$finish;
+		end
+	end	
+initial 
+	begin
+		//the file in the dir: proc\simulation\modelsim\
+		
+		file_out_Q0 = $fopen("simDataOutQ0.txt");
+		if(!file_out_Q0)
+		begin
+			$display("could not open ouput Q0 file!");
+			$finish;
+		end
+	end	
+initial 
+	begin
+		//the file in the dir: proc\simulation\modelsim\
+		
+		file_out_I1 = $fopen("simDataOutI1.txt");
+		if(!file_out_I1)
+		begin
+			$display("could not open ouput I1 file!");
+			$finish;
+		end
+	end	
+initial 
+	begin
+		//the file in the dir: proc\simulation\modelsim\
+		
+		file_out_Q1 = $fopen("simDataOutQ1.txt");
+		if(!file_out_Q1)
+		begin
+			$display("could not open ouput Q1 file!");
+			$finish;
+		end
+	end	
+initial 
+	begin
+		//the file in the dir: proc\simulation\modelsim\
+		
+		file_out_I2 = $fopen("simDataOutI2.txt");
+		if(!file_out_I2)
+		begin
+			$display("could not open ouput I2 file!");
+			$finish;
+		end
+	end	
+initial 
+	begin
+		//the file in the dir: proc\simulation\modelsim\
+		
+		file_out_Q2 = $fopen("simDataOutQ2.txt");
+		if(!file_out_Q2)
+		begin
+			$display("could not open ouput Q2 file!");
+			$finish;
+		end
+	end	
+initial 
+	begin
+		//the file in the dir: proc\simulation\modelsim\
+		
+		file_out_I3 = $fopen("simDataOutI3.txt");
+		if(!file_out_I3)
+		begin
+			$display("could not open ouput I3 file!");
+			$finish;
+		end
+	end	
+initial 
+	begin
+		//the file in the dir: proc\simulation\modelsim\
+		
+		file_out_Q3 = $fopen("simDataOutQ3.txt");
+		if(!file_out_Q3)
+		begin
+			$display("could not open ouput Q3 file!");
+			$finish;
+		end
+	end	
+
+
+reg isFIRValid_reg;
+	
+always @(posedge CLK or negedge nRST)
+	if (!nRST)
+		isFIRValid_reg <= 1'b0;
+	else
+		if (isConfigDone)
+			isFIRValid_reg <= 1'b1;
+			
+
+// wire signed [23 : 0] dout_s_i;
+// wire signed [23 : 0] dout_s_q;
+
+// assign dout_s_i = Data_Out_I0;
+// assign dout_s_q = Data_Out_Q0;
+//assign rst_write = CLK & (Data_Out_Valid);  // generate write clk, doesn't write in reset time;
+
+always @(negedge Data_Out_I0_Valid)
+		$fdisplay(file_out_I0, "%16d", Data_Out_I0);
+always @(negedge Data_Out_Q0_Valid)
+		$fdisplay(file_out_Q0, "%16d", Data_Out_Q0);
+	
+always @(negedge Data_Out_I1_Valid)
+		$fdisplay(file_out_I1, "%16d", Data_Out_I1);	
+always @(negedge Data_Out_Q1_Valid)
+		$fdisplay(file_out_Q1, "%16d", Data_Out_Q1);
+		
+always @(negedge Data_Out_I2_Valid)
+		$fdisplay(file_out_I2, "%16d", Data_Out_I2);	
+always @(negedge Data_Out_Q2_Valid)
+		$fdisplay(file_out_Q2, "%16d", Data_Out_Q2);
+		
+always @(negedge Data_Out_I3_Valid)
+		$fdisplay(file_out_I3, "%16d", Data_Out_I3);	
+always @(negedge Data_Out_Q3_Valid)
+		$fdisplay(file_out_Q3, "%16d", Data_Out_Q3);
+		
+	
+	
+	
+                                                   
+always                                                 
+// optional sensitivity list                           
+// @(event1 or event2 or .... eventn)                  
+begin                                                  
+// code executes for every event on sensitivity list   
+// insert code here --> begin                          
+                                                       
+@eachvec;                                              
+// --> end                                             
+end                                                    
+endmodule
+

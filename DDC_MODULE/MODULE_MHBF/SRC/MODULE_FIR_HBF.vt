@@ -1,0 +1,330 @@
+// Copyright (C) 1991-2014 Altera Corporation
+// Your use of Altera Corporation's design tools, logic functions 
+// and other software and tools, and its AMPP partner logic 
+// functions, and any output files from any of the foregoing 
+// (including device programming or simulation files), and any 
+// associated documentation or information are expressly subject 
+// to the terms and conditions of the Altera Program License 
+// Subscription Agreement, Altera MegaCore Function License 
+// Agreement, or other applicable license agreement, including, 
+// without limitation, that your use is for the sole purpose of 
+// programming logic devices manufactured by Altera and sold by 
+// Altera or its authorized distributors.  Please refer to the 
+// applicable agreement for further details.
+
+// *****************************************************************************
+// This file contains a Verilog test bench template that is freely editable to  
+// suit user's needs .Comments are provided in each section to help the user    
+// fill out necessary details.                                                  
+// *****************************************************************************
+// Generated on "04/09/2018 18:40:35"
+                                                                                
+// Verilog Test Bench template for design : MODULE_FIR_HBF_ASYM
+// 
+// Simulation tool : ModelSim-Altera (Verilog)
+// 
+
+`timescale 1 ps/ 1 ps
+module MODULE_FIR_HBF_SYMM_vlg_tst();
+
+parameter NMHBF_MAX   	      = 5;
+// constants                                           
+// general purpose registers
+reg eachvec;
+// test vector input registers
+reg CLK;
+reg signed [23:0] Data_Config_In;
+reg [23:0] rData_In;
+reg signed [23:0] Data_In;
+reg Data_In_Valid;
+reg isConfig;
+reg nRST;
+
+reg [NMHBF_MAX-1:0] MHBF_CTL;	
+reg [3:0] MHBF_CTL_idx;
+	
+// wires                                               
+wire signed [23:0]  Data_Out;
+wire Data_Out_Valid;
+wire isConfigACK;
+wire isConfigDone;
+
+// assign statements (if any)                          
+MODULE_FIR_HBF_SYMM i1 (
+// port map - connection between master ports and signals/registers   
+	.CLK(CLK),
+	.Data_Config_In(Data_Config_In),
+	.Data_In(Data_In),
+	.Data_In_Valid(Data_In_Valid),
+	.Data_Out(Data_Out),
+	.Data_Out_Valid(Data_Out_Valid),
+	
+	.MHBF_CTL(MHBF_CTL),
+	.MHBF_CTL_idx(MHBF_CTL_idx),
+	.isConfig(isConfig),
+	.isConfigACK(isConfigACK),
+	.isConfigDone(isConfigDone),
+	.nRST(nRST)
+);
+
+parameter  clk_period      		= 10;                        		// clk frequency: 5MHz;
+parameter  clk_half_period 	 	= clk_period / 2;  
+parameter  clk_period_1M 		= clk_period * 5;     
+parameter  clk_half_period_1M   = clk_half_period * 5;
+parameter  data_num   	   		= 10000;         
+parameter  initial_config_time  = 1000;             		// simulate data length;
+parameter  time_sim 	   		= data_num * clk_half_period * 20 + initial_config_time; 	// simulate time;
+parameter  clk_period_data_in_valid_low = clk_period * 22;
+
+
+
+////////////////////////////////////////////////////////////////////
+/// 
+parameter FILTER_MAX_ORDER  =  32;
+
+reg isConfigDone_reg;
+
+wire signed [23:0] coef[FILTER_MAX_ORDER+1:0];
+wire signed [23:0] coef2[FILTER_MAX_ORDER+1:0];
+
+assign coef[0] = 24'b000000000000000000000000;
+assign coef[1] = 24'b111111111111111111111001;
+assign coef[2] = 24'b000000000000000000000000;
+assign coef[3] = 24'b111111111111111111111001;
+assign coef[4] = 24'b000000000000000000000000;
+assign coef[5] = 24'b111111111111111111111001;
+assign coef[6] = 24'b000000000000000000000000;
+assign coef[7] = 24'b111111111111111111111001;
+assign coef[8] = 24'b000000000000000000000000;
+assign coef[9] = 24'b111111111111111111111001;
+assign coef[10] = 24'b000000000000000000000000;
+assign coef[11] = 24'b111111111111111111111001;
+assign coef[12] = 24'b000000000000000000000000;
+assign coef[13] = 24'b111111111111111111111001;
+assign coef[14] = 24'b000000000000000000000000;
+assign coef[15] = 24'b010000000000000000110001;
+assign coef[16] = 24'b011111111111111111111111;
+assign coef[17] = 24'b010000000000000000110001;
+assign coef[18] = 24'b000000000000000000000000;
+assign coef[19] = 24'b111111111111111111111001;
+assign coef[20] = 24'b000000000000000000000000;
+assign coef[21] = 24'b111111111111111111111001;
+assign coef[22] = 24'b000000000000000000000000;
+assign coef[23] = 24'b111111111111111111111001;
+assign coef[24] = 24'b000000000000000000000000;
+assign coef[25] = 24'b111111111111111111111001;
+assign coef[26] = 24'b000000000000000000000000;
+assign coef[27] = 24'b111111111111111111111001;
+assign coef[28] = 24'b000000000000000000000000;
+assign coef[29] = 24'b111111111111111111111001;
+assign coef[30] = 24'b000000000000000000000000;
+assign coef[31] = 24'b111111111111111111111001;
+assign coef[32] = 24'b000000000000000000000000;
+assign coef[33] = 24'b000000000000000000000111;
+
+
+initial                                                
+begin                                                  
+// code that executes only once                        
+// insert code here --> begin 	
+	MHBF_CTL = {{(NMHBF_MAX-1){1'b0}}, 1'b1};
+	MHBF_CTL_idx = 4'd0;
+	isConfigDone_reg = 1'b0;
+	isConfig = 1'b0;
+    CLK  = 1;
+	nRST = 0;
+	rData_In = 24'd0;
+	Data_In  = 24'd0;
+	
+	#500 nRST = 1;
+	#time_sim  $finish;
+	rData_In = 24'd0; 
+	Data_In  = 24'd0;
+// --> end                                             
+$display("Running testbench");                       
+end    
+
+
+//// generate clk
+always 
+begin
+	#clk_half_period CLK = ~CLK;
+end
+
+
+// reg [1:0] data_valid_cnt;
+ reg [7:0]state_idx_reg;
+ 
+//// read test data from file;
+integer Pattern;
+reg signed [23:0] stimulus[1:data_num];
+
+initial 
+begin
+	// file must be putted in dir： $proc\simulation\modelsim\
+	
+	$readmemb("S_bin.txt", stimulus);
+	Pattern = 0;
+
+	#initial_config_time;
+	repeat(data_num)
+		begin
+			Pattern = Pattern + 1;
+			Data_In = stimulus[Pattern];
+			Data_In_Valid <= 1;
+			#clk_period;
+			Data_In_Valid <= 0;
+			#clk_period_data_in_valid_low;
+		end
+end
+
+
+// always @(posedge CLK )
+	// if (isConfigDone_reg)
+		// begin
+			// isConfigDone_reg = 1'b1;
+		// end
+// always
+	// Data_In = rData_In;
+
+
+//// write output d_out to file: simDataOut.txt;
+integer file_out;
+
+initial 
+begin
+	//the file in the dir: proc\simulation\modelsim\
+	
+	file_out = $fopen("simDataOut.txt");
+	if(!file_out)
+	begin
+		$display("could not open ouput file!");
+		$finish;
+	end
+end	
+
+reg isConfig_reg;
+
+
+reg isSecondConfig;
+reg [7:0]state_idx_reg2;
+
+initial 
+begin
+	state_idx_reg <= 8'd0;
+	state_idx_reg2 <= 8'd0;
+	isConfig_reg <= 1'b0;
+	// CIC_Config_Data_reg[0] = 16'b0000000000111111;
+	// CIC_Config_Data_reg[1] = 16'd3;
+	#600 	 isConfig_reg 	<= 1'b1;
+	//#150000  isSecondConfig <= 1'b1;
+
+end
+
+always @(posedge CLK)
+begin
+	case (state_idx_reg)
+		8'd0:
+			begin
+				if (isConfig_reg)
+					state_idx_reg <= state_idx_reg + 8'd1;
+			end
+		8'd1:
+			begin
+				isConfig <= 1'b1;
+				state_idx_reg <= state_idx_reg + 8'd1;
+			end
+		8'd2,8'd4,8'd6,8'd8,8'd10,8'd12,8'd14,8'd16,8'd18,8'd20,8'd22,8'd24,8'd26,8'd28,8'd30,8'd32, 
+		8'd3,8'd5,8'd7,8'd9,8'd11,8'd13,8'd15,8'd17,8'd19,8'd21,8'd23,8'd25,8'd27,8'd29,8'd31,8'd33,
+		8'd34, 8'd35:	
+			begin
+				isConfig <= 1'b0;
+				Data_Config_In <= coef[state_idx_reg-2];
+				state_idx_reg <= state_idx_reg + 8'd1;
+			end
+		8'd36:
+			begin	
+				isConfig_reg <= 1'b0;
+				state_idx_reg <= state_idx_reg + 8'd1;
+			end
+		8'd37:
+			begin
+				// NULL
+			end
+		default:
+			begin
+				// NULL
+			end
+	endcase
+end
+
+
+always @(posedge CLK)
+begin
+	case (state_idx_reg2)
+		8'd0:
+			begin
+				if (isSecondConfig)
+					state_idx_reg2 <= state_idx_reg2 + 8'd1;
+			end
+		8'd1:
+			begin
+				isConfig <= 1'b1;
+				state_idx_reg2 <= state_idx_reg2 + 8'd1;
+			end
+		8'd2, 8'd4, 8'd6,8'd8,8'd10,8'd12,8'd14,8'd16,8'd18,8'd20,8'd22,8'd24,8'd26, 8'd28,8'd30,8'd32, 
+		8'd3, 8'd5, 8'd7,8'd9,8'd11,8'd13,8'd15,8'd17,8'd19,8'd21,8'd23,8'd25,8'd27, 8'd29,8'd31,8'd33,
+		8'd34:
+			begin
+				isConfig <= 1'b0;
+				Data_Config_In <= coef[state_idx_reg-2];
+				state_idx_reg <= state_idx_reg + 8'd1;
+			end
+		8'd35:
+			begin	
+				isConfig_reg <= 1'b0;
+				state_idx_reg <= state_idx_reg + 8'd1;
+			end
+		8'd36:
+			begin
+				// NULL
+			end
+		default:
+			begin
+				// NULL
+			end
+	endcase
+end
+
+
+reg isFIRValid_reg;
+	
+always @(posedge CLK or negedge nRST)
+	if (!nRST)
+		isFIRValid_reg <= 1'b0;
+	else
+		if (isConfigDone)
+			isFIRValid_reg <= 1'b1;
+			
+			
+wire rst_write;
+wire signed [31 : 0] dout_s;
+assign dout_s = Data_Out;
+//assign rst_write = CLK & (Data_Out_Valid);  // generate write clk, doesn't write in reset time;
+
+always @(posedge Data_Out_Valid)
+		$fdisplay(file_out, "%8d", dout_s);
+	
+                                                
+always                                                 
+// optional sensitivity list                           
+// @(event1 or event2 or .... eventn)                  
+begin                                                  
+// code executes for every event on sensitivity list   
+// insert code here --> begin                          
+                                                       
+@eachvec;                                              
+// --> end                                             
+end                                                    
+endmodule
+

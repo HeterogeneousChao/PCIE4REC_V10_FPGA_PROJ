@@ -1,0 +1,203 @@
+///////////////////////////////////////////////////////////////////////////////////
+////  DDC_CHANNEL_MUX_FILTERS_CTL
+////		
+////         								ZHAOCHAO
+////									 		20180514
+///////////////////////////////////////////////////////////////////////////////////////////
+////
+
+module DDC_CHANNEL_MUX_FILTERS_CTL(
+	CLK, nRST,
+	
+	isConfig,
+	Data_Config_In,
+	isConfigACK,
+	isConfigDone,
+	
+	isConfig_CIC_CICC,
+	Data_Config_Out_CIC_CICC,
+	isConfigACK_CIC_CICC,
+	isConfigDone_CIC_CICC,
+	
+	isConfig_MHBF,
+	Data_Config_Out_MHBF,
+	isConfigACK_MHBF,
+	isConfigDone_MHBF,
+	
+	isConfig_DFIR,
+	Data_Config_Out_DFIR,
+	isConfigACK_DFIR,
+	isConfigDone_DFIR
+);
+
+	parameter CONFIG_WIDTH 		      = 32;	
+	parameter CIC_CONFIG_DATA_NUM 	  = 3;
+	parameter CICC_CONFIG_DATA_NUM 	  = 259;
+	parameter MHBF_CONFIG_DATA_NUM 	  = 176; // 1 + 5*(33 + 2);
+	parameter DFIR_CONFIG_DATA_NUM 	  = 516; // 1 + 513 + 2;
+	
+	parameter CIC_CICC_CONFIG_DATA_NUM = CIC_CONFIG_DATA_NUM+CICC_CONFIG_DATA_NUM;
+	
+	input  CLK;
+	input  nRST;
+	
+	input  isConfig;
+	output isConfigACK;
+	output isConfigDone;
+	
+
+	//Data_Config_In[0]: CIC_NUMSECS, 
+	//Data_Config_In[1]: CIC_DCEF, 
+	//Data_Config_In[2]: CIC_SCALE;
+	//Data_Config_In[3 - CICC_FILTER_ORDER+3]: cicc coef, 
+	//Data_Config_In[CICC_FILTER_ORDER+4]:   cicc ScalVal, 
+	//Data_Config_In[CICC_FILTER_ORDER+5]:   isCoefSym;
+	//Data_Config_In[CICC_FILTER_ORDER+6]:   mhbf_ctl, 
+	//Data_Config_In[CICC_FILTER_ORDER+7 - CICC_FILTER_ORDER+(HBF_FILTER_ORDER+3)*5]: hbf coefs, 
+	//Data_Config_In[CICC_FILTER_ORDER+7 - CICC_FILTER_ORDER+(HBF_FILTER_ORDER+3)*5 + 1]: dfir dcef, 
+	//Data_Config_In[CICC_FILTER_ORDER+(HBF_FILTER_ORDER+3)*5+1]: dfir coefs,  
+	//Data_Config_In[CICC_FILTER_ORDER+(HBF_FILTER_ORDER+3)*5+2 - (*+DFIR_ORDER)]: dfir isCoefSym;
+	//Data_Config_In[*+1]:   fir ScalVal,
+	input  [CONFIG_WIDTH-1:0] Data_Config_In;
+	
+	output isConfig_CIC_CICC;
+	output signed [CONFIG_WIDTH-1:0] Data_Config_Out_CIC_CICC;
+	input  isConfigACK_CIC_CICC;
+	input  isConfigDone_CIC_CICC;
+	
+	output isConfig_MHBF;
+	output signed [CONFIG_WIDTH-1:0] Data_Config_Out_MHBF;
+	input  isConfigACK_MHBF;
+	input  isConfigDone_MHBF;
+	
+	output isConfig_DFIR;
+	output signed [CONFIG_WIDTH-1:0] Data_Config_Out_DFIR;
+	input  isConfigACK_DFIR;
+	input  isConfigDone_DFIR;
+
+	
+	reg  risConfigACK;
+	reg  risConfigDone;
+
+	reg	 risConfig_CIC_CICC;
+	reg	 signed [CONFIG_WIDTH-1:0] rData_Config_Out_CIC_CICC;
+	
+	reg	 risConfig_MHBF;
+	reg	 signed [CONFIG_WIDTH-1:0] rData_Config_Out_MHBF;
+	
+	reg	 risConfig_DFIR;
+	reg	 signed [CONFIG_WIDTH-1:0] rData_Config_Out_DFIR;
+
+	reg [3:0] state_idx_reg;
+	reg [9:0] cic_cicc_config_idx_reg;
+	reg [7:0] mhbf_config_idx_reg;
+	reg [9:0] dfir_config_idx_reg;
+
+	
+	always @(posedge CLK or negedge nRST)
+		if (!nRST)
+			begin
+				state_idx_reg <= 4'd0;
+				cic_cicc_config_idx_reg <= 10'd0;
+				mhbf_config_idx_reg <= 8'd0;
+				dfir_config_idx_reg <= 10'd0;
+
+				risConfigACK  <= 1'b0;
+				risConfigDone <= 1'b0;
+				
+				risConfig_CIC_CICC  <= 1'b0;
+				risConfig_MHBF      <= 1'b0;
+				risConfig_DFIR	    <= 1'b0;
+				
+				rData_Config_Out_CIC_CICC <= {CONFIG_WIDTH{1'b0}};
+				rData_Config_Out_MHBF  	  <= {CONFIG_WIDTH{1'b0}};
+				rData_Config_Out_DFIR	  <= {CONFIG_WIDTH{1'b0}};
+			end
+		else
+			case (state_idx_reg)
+				4'd0:	
+					if (isConfig)
+						begin
+							risConfig_CIC_CICC <= 1'b1;
+							risConfigACK 	   <= 1'b1;
+							state_idx_reg 	   <= 4'd1;
+						end
+				4'd1:
+					if (cic_cicc_config_idx_reg == CIC_CICC_CONFIG_DATA_NUM-1)
+						begin
+							cic_cicc_config_idx_reg <= 10'd0;
+							risConfig_MHBF <= 1'b1;
+							rData_Config_Out_CIC_CICC <= Data_Config_In;
+							state_idx_reg <= state_idx_reg + 4'd1;
+						end
+					else
+						begin
+							risConfig_CIC_CICC   <= 1'b0;
+							rData_Config_Out_CIC_CICC <= Data_Config_In;
+							cic_cicc_config_idx_reg <= cic_cicc_config_idx_reg + 1;
+						end
+				4'd2:
+					if (mhbf_config_idx_reg == MHBF_CONFIG_DATA_NUM-1)
+						begin
+							risConfig_DFIR 		<= 1'b1;
+							mhbf_config_idx_reg <= 10'd0;
+							risConfig_MHBF  	<= 1'b0;
+							rData_Config_Out_MHBF <= Data_Config_In;
+							state_idx_reg <= state_idx_reg + 4'd1;
+						end
+					else
+						begin
+							risConfig_MHBF    	  <= 1'b0;
+							rData_Config_Out_MHBF <= Data_Config_In;
+							mhbf_config_idx_reg   <= mhbf_config_idx_reg + 1;
+						end
+				4'd3:
+					if (dfir_config_idx_reg == DFIR_CONFIG_DATA_NUM)
+						begin
+							risConfigDone 		<= 1'b1;
+							dfir_config_idx_reg <= 10'd0;
+							risConfig_DFIR  	<= 1'b0;
+							state_idx_reg <= state_idx_reg + 4'd1;
+						end
+					else
+						begin
+							risConfig_DFIR    	  <= 1'b0;
+							rData_Config_Out_DFIR <= Data_Config_In;
+							dfir_config_idx_reg   <= dfir_config_idx_reg + 1;
+						end
+				4'd4:
+					begin
+						risConfigDone <= 1'b0;
+						risConfigACK  <= 1'b0;
+						state_idx_reg <= state_idx_reg + 4'd1;
+					end
+				4'd5:		// Normal Work state
+					begin
+						if (isConfig)
+							begin
+								risConfig_CIC_CICC <= 1'b1;
+								risConfigACK 	   <= 1'b1;
+								state_idx_reg 	   <= 4'd1;
+							end
+					end	
+					
+				default:
+					begin
+						state_idx_reg <= 4'd0;
+					end
+			endcase
+			
+	
+	assign isConfigACK  = risConfigACK;
+	assign isConfigDone = risConfigDone;
+	
+	
+	assign isConfig_CIC_CICC = risConfig_CIC_CICC;
+	assign isConfig_MHBF 	 = risConfig_MHBF;
+	assign isConfig_DFIR	 = risConfig_DFIR;
+
+	assign Data_Config_Out_CIC_CICC = rData_Config_Out_CIC_CICC;
+	assign Data_Config_Out_MHBF 	= rData_Config_Out_MHBF;
+	assign Data_Config_Out_DFIR 	= rData_Config_Out_DFIR;
+
+endmodule

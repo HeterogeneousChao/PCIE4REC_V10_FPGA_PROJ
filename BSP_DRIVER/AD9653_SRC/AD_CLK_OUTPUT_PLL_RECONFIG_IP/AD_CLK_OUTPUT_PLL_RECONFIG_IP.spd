@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="AD_CLK_OUTPUT_PLL_RECONFIG_IP_sim/AD_CLK_OUTPUT_PLL_RECONFIG_IP.vo"
+   type="VERILOG" />
+ <topLevel name="AD_CLK_OUTPUT_PLL_RECONFIG_IP" />
+ <deviceFamily name="cyclonev" />
+</simPackage>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/altera_xcvr_functions.sv"
+   type="SYSTEM_VERILOG"
+   library="RESET_CONTROLLER_IP" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/mentor/altera_xcvr_functions.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="RESET_CONTROLLER_IP"
+   simulator="modelsim" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/alt_xcvr_resync.sv"
+   type="SYSTEM_VERILOG"
+   library="RESET_CONTROLLER_IP" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/mentor/alt_xcvr_resync.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="RESET_CONTROLLER_IP"
+   simulator="modelsim" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/altera_xcvr_reset_control.sv"
+   type="SYSTEM_VERILOG"
+   library="RESET_CONTROLLER_IP" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/alt_xcvr_reset_counter.sv"
+   type="SYSTEM_VERILOG"
+   library="RESET_CONTROLLER_IP" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/mentor/altera_xcvr_reset_control.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="RESET_CONTROLLER_IP"
+   simulator="modelsim" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/mentor/alt_xcvr_reset_counter.sv"
+   type="SYSTEM_VERILOG_ENCRYPT"
+   library="RESET_CONTROLLER_IP"
+   simulator="modelsim" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/plain_files.txt"
+   type="OTHER"
+   library="RESET_CONTROLLER_IP" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/mentor_files.txt"
+   type="OTHER"
+   library="RESET_CONTROLLER_IP" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/cadence_files.txt"
+   type="OTHER"
+   library="RESET_CONTROLLER_IP" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/synopsys_files.txt"
+   type="OTHER"
+   library="RESET_CONTROLLER_IP" />
+ <file
+   path="RESET_CONTROLLER_IP_sim/altera_xcvr_reset_control/aldec_files.txt"
+   type="OTHER"
+   library="RESET_CONTROLLER_IP" />
+ <file path="RESET_CONTROLLER_IP_sim/RESET_CONTROLLER_IP.v" type="VERILOG" />
+ <topLevel name="RESET_CONTROLLER_IP" />
+ <deviceFamily name="cyclonev" />
+</simPackage>

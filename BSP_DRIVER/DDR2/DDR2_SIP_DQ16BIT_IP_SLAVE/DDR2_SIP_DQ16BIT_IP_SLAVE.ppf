@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pinplan
+ variation_name="DDR2_SIP_DQ16BIT_IP_SLAVE"
+ megafunction_name="ALTERA_MEM_IF_DDR2_EMIF"
+ intended_family="Cyclone V"
+ specifies="all_ports">
+ <global>
+  <pin name="pll_ref_clk" direction="input" scope="external" />
+  <pin name="global_reset_n" direction="input" scope="external" />
+  <pin name="soft_reset_n" direction="input" scope="external" />
+  <pin name="afi_clk" direction="output" scope="external" />
+  <pin name="afi_half_clk" direction="output" scope="external" />
+  <pin name="afi_reset_n" direction="output" scope="external" />
+  <pin name="afi_reset_export_n" direction="output" scope="external" />
+  <pin name="mem_a[12..0]" direction="output" scope="external" />
+  <pin name="mem_ba[2..0]" direction="output" scope="external" />
+  <pin name="mem_ck" direction="output" scope="external" />
+  <pin name="mem_ck_n" direction="output" scope="external" />
+  <pin name="mem_cke" direction="output" scope="external" />
+  <pin name="mem_cs_n" direction="output" scope="external" />
+  <pin name="mem_ras_n" direction="output" scope="external" />
+  <pin name="mem_cas_n" direction="output" scope="external" />
+  <pin name="mem_we_n" direction="output" scope="external" />
+  <pin name="mem_dq[15..0]" direction="bidir" scope="external" />
+  <pin name="mem_dqs[1..0]" direction="bidir" scope="external" />
+  <pin name="mem_odt" direction="output" scope="external" />
+  <pin name="avl_ready" direction="output" scope="external" />
+  <pin name="avl_burstbegin" direction="input" scope="external" />
+  <pin name="avl_addr[23..0]" direction="input" scope="external" />
+  <pin name="avl_rdata_valid" direction="output" scope="external" />
+  <pin name="avl_rdata[63..0]" direction="output" scope="external" />
+  <pin name="avl_wdata[63..0]" direction="input" scope="external" />
+  <pin name="avl_read_req" direction="input" scope="external" />
+  <pin name="avl_write_req" direction="input" scope="external" />
+  <pin name="avl_size" direction="input" scope="external" />
+  <pin name="local_init_done" direction="output" scope="external" />
+  <pin name="local_cal_success" direction="output" scope="external" />
+  <pin name="local_cal_fail" direction="output" scope="external" />
+  <pin
+     name="seriesterminationcontrol[15..0]"
+     direction="input"
+     scope="external" />
+  <pin
+     name="parallelterminationcontrol[15..0]"
+     direction="input"
+     scope="external" />
+  <pin name="dll_pll_locked" direction="output" scope="external" />
+  <pin name="dll_delayctrl[6..0]" direction="input" scope="external" />
+ </global>
+</pinplan>

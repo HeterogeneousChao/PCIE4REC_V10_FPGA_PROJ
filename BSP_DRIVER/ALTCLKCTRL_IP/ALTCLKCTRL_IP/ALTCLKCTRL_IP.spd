@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="simulation/submodules/ALTCLKCTRL_IP_altclkctrl_0.v"
+   type="VERILOG"
+   library="altclkctrl_0" />
+ <file path="simulation/ALTCLKCTRL_IP.v" type="VERILOG" />
+ <topLevel name="ALTCLKCTRL_IP" />
+ <deviceFamily name="cyclonev" />
+</simPackage>

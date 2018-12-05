@@ -1,0 +1,71 @@
+C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_OUT_SCALE.v {1 {vlog -work work C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_OUT_SCALE.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module CIC_OUT_SCALE
+
+Top level modules:
+	CIC_OUT_SCALE
+
+} {} {}} C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_INTEGRATED.v {1 {vlog -work work C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_INTEGRATED.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module CIC_INTEGRATED
+
+Top level modules:
+	CIC_INTEGRATED
+
+} {} {}} C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_CTL.v {1 {vlog -work work C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_CTL.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module CIC_CTL
+
+Top level modules:
+	CIC_CTL
+
+} {} {}} C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_MUX/MODULE_MUX_SP_v1_0.v {1 {vlog -work work C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_MUX/MODULE_MUX_SP_v1_0.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module MODULE_MUX_SP
+
+Top level modules:
+	MODULE_MUX_SP
+
+} {} {}} C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_DECIMATE.v {1 {vlog -work work C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_DECIMATE.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module CIC_DECIMATE
+
+Top level modules:
+	CIC_DECIMATE
+
+} {} {}} C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_INTEGRATED_Sub.v {1 {vlog -work work C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_INTEGRATED_Sub.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module CIC_INTEGRATED_SUB
+
+Top level modules:
+	CIC_INTEGRATED_SUB
+
+} {} {}} C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_COMB.v {1 {vlog -work work C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_COMB.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module CIC_COMB
+
+Top level modules:
+	CIC_COMB
+
+} {} {}} C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/MODULE_CIC.v {1 {vlog -work work C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/MODULE_CIC.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module MODULE_CIC
+
+Top level modules:
+	MODULE_CIC
+
+} {} {}} C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_COMB_Sub.v {1 {vlog -work work C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/CIC_COMB_Sub.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module CIC_COMB_SUB
+
+Top level modules:
+	CIC_COMB_SUB
+
+} {} {}} C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/MODULE_CIC.vt {1 {vlog -work work C:/Users/47968/Desktop/FPGA/DDC_4CHANNELS-v1_1/DDC_4CHANNELS_SIM/SRC/MODULE_CIC/SRC/MODULE_CIC.vt
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module MODULE_CIC_vlg_tst
+
+Top level modules:
+	MODULE_CIC_vlg_tst
+
+} {} {}}

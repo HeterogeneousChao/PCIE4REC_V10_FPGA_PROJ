@@ -1,0 +1,18 @@
+# system info ALTCLKCTRL_IP on 2018.07.15.04:04:31
+system_info:
+name,value
+DEVICE,5CGXFC9D6F27C7
+DEVICE_FAMILY,Cyclone V
+GENERATION_ID,1531598670
+#
+#
+# Files generated for ALTCLKCTRL_IP on 2018.07.15.04:04:31
+files:
+filepath,kind,attributes,module,is_top
+simulation/ALTCLKCTRL_IP.v,VERILOG,,ALTCLKCTRL_IP,true
+simulation/submodules/ALTCLKCTRL_IP_altclkctrl_0.v,VERILOG,,ALTCLKCTRL_IP_altclkctrl_0,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+ALTCLKCTRL_IP.altclkctrl_0,ALTCLKCTRL_IP_altclkctrl_0

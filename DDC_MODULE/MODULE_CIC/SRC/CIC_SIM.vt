@@ -1,0 +1,253 @@
+// Copyright (C) 1991-2014 Altera Corporation
+// Your use of Altera Corporation's design tools, logic functions 
+// and other software and tools, and its AMPP partner logic 
+// functions, and any output files from any of the foregoing 
+// (including device programming or simulation files), and any 
+// associated documentation or information are expressly subject 
+// to the terms and conditions of the Altera Program License 
+// Subscription Agreement, Altera MegaCore Function License 
+// Agreement, or other applicable license agreement, including, 
+// without limitation, that your use is for the sole purpose of 
+// programming logic devices manufactured by Altera and sold by 
+// Altera or its authorized distributors.  Please refer to the 
+// applicable agreement for further details.
+
+// *****************************************************************************
+// This file contains a Verilog test bench template that is freely editable to  
+// suit user's needs .Comments are provided in each section to help the user    
+// fill out necessary details.                                                  
+// *****************************************************************************
+// Generated on "04/06/2018 05:34:25"
+                                                                                
+// Verilog Test Bench template for design : CIC_SIM
+// 
+// Simulation tool : ModelSim-Altera (Verilog)
+// 
+
+`timescale 1 ps/ 1 ps
+module CIC_SIM_vlg_tst();
+// constants                                           
+// general purpose registers
+reg eachvec;
+
+/////////////////////////////////////////////////////////////////////
+//// CIC Simulation Parameters
+parameter  clk_period      		= 200;                        		// clk frequency: 5MHz;
+parameter  clk_half_period 	 	= clk_period / 2;  
+parameter  clk_period_1M 		= clk_period * 5;     
+parameter  clk_half_period_1M   = clk_half_period * 5;
+parameter  data_num   	   		= 2000;                      		// simulate data length;
+parameter  time_sim 	   		= data_num * clk_half_period; 	// simulate time;
+
+
+/////////////////////////////////////////////////////////////////////
+//// CIC Config Parameters
+parameter INPUT_WIDTH   		=  10;
+parameter MIDDLE_WIDTH  		=  56;
+parameter OUTPUT_WIDTH  		=  32;
+parameter CIC_MAX_DCEF 			=  16;
+parameter CIC_MAX_DIFFD  		=  1;
+parameter CIC_MAX_NUMSECS		=  16;
+parameter CIC_CONFIG_DATA_WIDTH =  16;
+//////////////////////////////////////////////////////////////////////////////
+
+// test vector input registers
+reg CLK;
+reg signed [(INPUT_WIDTH-1):0] Data_In;
+reg RSTn;
+reg isConfig;
+reg [CIC_CONFIG_DATA_WIDTH-1:0] rCIC_Config_Data;
+
+
+reg [3:0]state_idx_reg;
+// wires      
+wire isConfigACK;
+wire isConfigDone;                      
+wire signed [OUTPUT_WIDTH-1:0]  Data_Out;
+wire Data_Out_Valid;
+
+// assign statements (if any)                          
+CIC_FILTER #(
+		.INPUT_WIDTH(INPUT_WIDTH),
+		.MIDDLE_WIDTH(MIDDLE_WIDTH),
+		.OUTPUT_WIDTH(OUTPUT_WIDTH),
+		.CIC_MAX_DCEF(CIC_MAX_DCEF),
+		.CIC_MAX_DIFFD(CIC_MAX_DIFFD),
+		.CIC_CONFIG_DATA_WIDTH(CIC_CONFIG_DATA_WIDTH)
+		
+	)i1 (
+	// parameter INPUT_WIDTH   =  10;
+	// parameter MIDDLE_WIDTH  =  64;
+	// parameter OUTPUT_WIDTH  =  32;
+	// parameter CIC_MAX_DCEF 		=  16;
+	// parameter CIC_MAX_DIFFD  	=  1;
+	// parameter CIC_MAX_NUMSECS	=  16;
+	// parameter CIC_CONFIG_DATA_WIDTH = 16
+// port map - connection between master ports and signals/registers   
+	.CLK(CLK),
+	.nRST(RSTn),
+	.isConfig(isConfig),
+	.isConfigACK(isConfigACK),
+	.isConfigDone(isConfigDone),
+	.Data_Config_In(rCIC_Config_Data),
+	.Data_In(Data_In),
+	.Data_Out(Data_Out),
+	.Data_Out_Valid(Data_Out_Valid)
+);
+
+reg    [CIC_CONFIG_DATA_WIDTH-1:0] CIC_Config_Data_reg[1:0]; 
+
+initial                                                
+begin                                                  
+// code that executes only once                        
+// insert code here --> begin                          
+	CLK  = 1;
+	RSTn = 0;
+	
+	#500 RSTn = 1;
+	#time_sim $finish;
+	Data_In = 10'd0; 
+	                                            
+// --> end                                             
+$display("Running testbench");                       
+end                
+
+reg isConfig_reg;
+
+initial 
+begin
+	state_idx_reg <= 4'd0;
+	isConfig_reg <= 1'b0;
+	// CIC_Config_Data_reg[0] = 16'b0000000000111111;
+	// CIC_Config_Data_reg[1] = 16'd3;
+	#600 	isConfig_reg <= 1'b1;
+	#80000  isConfig_reg <= 1'b1;
+
+end
+
+
+always @(posedge CLK)
+begin
+	case (state_idx_reg)
+		4'd0:
+			begin
+				if (isConfig_reg)
+					state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd1:
+			begin
+				isConfig <= 1'b1;
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd2:
+			begin
+				isConfig <= 1'b0;
+				rCIC_Config_Data <= 16'b0000000011111111;
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd3:
+			begin	
+				isConfig_reg <= 1'b0;
+				rCIC_Config_Data <= 16'd4;
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd4:
+			begin
+				if (isConfig_reg)
+					begin
+						state_idx_reg <= state_idx_reg + 4'd1;
+					end
+			end
+		4'd5:
+			begin
+				isConfig <= 1'b1;
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd6:
+			begin
+				isConfig <= 1'b0;
+				rCIC_Config_Data <= 16'b0000000000111111;
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd7:
+			begin	
+				rCIC_Config_Data <= 16'd8;
+				isConfig_reg <= 1'b0;
+				state_idx_reg <= state_idx_reg + 4'd1;
+			end
+		4'd8:
+			begin
+				// NULL
+			end
+		default:
+			begin
+				// NULL
+			end
+	endcase
+end
+
+	
+//// generate clk
+always 
+begin
+	#clk_half_period CLK = ~CLK;
+end
+
+	
+//// read test data from file;
+integer Pattern;
+reg signed [INPUT_WIDTH-1:0] stimulus[1:data_num];
+
+initial 
+begin
+	// file must be putted in dir： $proc\simulation\modelsim\
+	
+	$readmemb("S_bin.txt", stimulus);
+	
+	Pattern = 0;
+	repeat(data_num)
+	begin
+		Pattern = Pattern + 1;
+		Data_In = stimulus[Pattern];
+		#clk_period;
+	end
+end	
+
+
+//// write output d_out to file: simDataOut.txt;
+integer file_out;
+initial 
+begin
+	//the file in the dir: proc\simulation\modelsim\
+	file_out = $fopen("simDataOut.txt");
+	if(!file_out)
+	begin
+		$display("could not open ouput file!");
+		$finish;
+	end
+end	
+
+wire rst_write;
+wire signed [OUTPUT_WIDTH-1:0] dout_s;
+
+assign dout_s = Data_Out;
+assign rst_write = CLK & (RSTn);  // generate write clk, doesn't write in reset time;
+
+always @(posedge rst_write)
+	if (Data_Out_Valid)
+		  $fdisplay(file_out, "%d", dout_s); 
+		  
+		  
+                            
+always                                                 
+// optional sensitivity list                           
+// @(event1 or event2 or .... eventn)                  
+begin                                                  
+// code executes for every event on sensitivity list   
+// insert code here --> begin                          
+                                                       
+@eachvec;                                              
+// --> end                                             
+end                                                    
+endmodule
+
